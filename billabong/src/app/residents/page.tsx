@@ -118,10 +118,10 @@ export default function Residents() {
       </nav>
 
       {/* Main Content */}
-      <main className="relative py-20 px-4 sm:px-6 lg:px-8 min-h-[180vh]">
+      <main className="relative py-12 sm:py-20 px-4 sm:px-6 lg:px-8 min-h-[180vh]">
         {/* Center Animation - Outside container constraints */}
         <div 
-          className="absolute top-3/10 left-1/2 pointer-events-none z-0 will-change-transform" 
+          className="absolute top-[17%] left-1/2 pointer-events-none z-0 will-change-transform md:top-3/10" 
           style={{ 
             transform: 'translate(-50%, -50%)',
             width: '80vw',
@@ -134,26 +134,26 @@ export default function Residents() {
 
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-32">
-            <h1 className="font-heading font-bold text-5xl sm:text-6xl text-[#0D1B2A] mb-6">
+          <div className="text-center mb-24 sm:mb-32">
+            <h1 className="font-heading font-bold text-3xl sm:text-4xl lg:text-6xl text-[#0D1B2A] mb-4 sm:mb-6">
               residents
             </h1>
-            <p className="font-body text-lg text-[#1A1A1A]/70 max-w-2xl mx-auto leading-relaxed">
+            <p className="font-body text-base sm:text-lg text-[#1A1A1A]/70 max-w-2xl mx-auto leading-relaxed">
               meet the builders, researchers, and creators currently calling billabong home.
             </p>
           </div>
 
-          {/* Scattered Cards Container */}
-          <div className="relative min-h-[120vh]">
+          {/* Scattered Cards Container - Desktop scattered, Mobile stacked */}
+          <div className="relative min-h-[120vh] sm:block flex flex-col items-center gap-8">
             {residents.map((resident, index) => (
               <ResidentCard key={index} resident={resident} />
             ))}
           </div>
 
           {/* Footer Note */}
-          <div className="mt-24 text-center relative z-50">
-            <div className="bg-[#E9DCC2]/20 rounded-xl p-8 border border-[#6C8C64]/20">
-              <p className="font-body text-[#1A1A1A]/70 leading-relaxed">
+          <div className="mt-16 sm:mt-24 text-center relative z-50">
+            <div className="bg-[#E9DCC2]/20 rounded-xl p-6 sm:p-8 border border-[#6C8C64]/20">
+              <p className="font-body text-sm sm:text-base text-[#1A1A1A]/70 leading-relaxed">
                 interested in joining us?{' '}
                 <a href="/apply" className="text-[#1F7A8C] hover:underline font-medium">
                   learn about residencies
@@ -165,9 +165,9 @@ export default function Residents() {
       </main>
 
       {/* Simple Footer */}
-      <footer className="border-t border-[#1F7A8C]/10 py-8 px-4 bg-[#F7F8F5]">
+      <footer className="border-t border-[#1F7A8C]/10 py-6 sm:py-8 px-4 bg-[#F7F8F5]">
         <div className="max-w-6xl mx-auto text-center">
-          <p className="font-body text-sm text-[#1A1A1A]/50">
+          <p className="font-body text-xs sm:text-sm text-[#1A1A1A]/50">
             © {new Date().getFullYear()} billabong house
           </p>
         </div>

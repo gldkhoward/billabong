@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 
 interface ResidentCardProps {
@@ -54,12 +54,25 @@ const getSocialIcon = (platform: string) => {
 
 export function ResidentCard({ resident }: ResidentCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   return (
     <div
-      className="absolute w-full sm:w-[380px] transition-transform duration-300 ease-out"
+      className="relative sm:absolute w-full max-w-[380px] sm:w-[380px] transition-transform duration-300 ease-out"
       style={{
-        ...resident.position,
+        // On mobile, cards are stacked (relative positioning, no custom position)
+        // On desktop, cards are scattered (absolute positioning with custom positions)
+        ...(isMobile ? {} : resident.position),
         transform: `rotate(${resident.rotation}deg)`,
         zIndex: isHovered ? 50 : 10,
       }}

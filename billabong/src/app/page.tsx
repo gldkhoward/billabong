@@ -136,23 +136,18 @@ export default function Home() {
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-[#1F7A8C]/10 bg-[#F7F8F5]">
             <div className="px-4 py-4 space-y-3">
-              <a href="#about" className="block text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C]">
-                About
+              <a href="/house-rules" className="block text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C]" onClick={() => setMobileMenuOpen(false)}>
+                house rules
               </a>
-              <a href="#residency" className="block text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C]">
-                Residency
-              </a>
-              <a href="#residents" className="block text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C]">
-                Residents
-              </a>
-              <a href="#location" className="block text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C]">
-                Location
+              <a href="/residents" className="block text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C]" onClick={() => setMobileMenuOpen(false)}>
+                residents
               </a>
               <a 
                 href={CONFIG.apply_url} 
                 className="block w-full px-6 py-2 bg-[#1F7A8C] text-white rounded-full font-medium text-sm text-center hover:bg-[#0D1B2A]"
+                onClick={() => setMobileMenuOpen(false)}
               >
-                Apply Now
+                apply now
               </a>
             </div>
           </div>
@@ -197,17 +192,21 @@ export default function Home() {
               href={CONFIG.events_url}
               className="px-8 py-4 border-2 border-[#1F7A8C] text-[#1F7A8C] rounded-full font-heading font-semibold text-lg hover:bg-[#1F7A8C] hover:text-white transition-all"
             >
-              Upcoming Events
+              upcoming events
             </a>
           </div>
         </div>
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <a href="#manifesto" aria-label="Scroll to manifesto section">
-            <svg className="w-6 h-6 text-[#1F7A8C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <a 
+          href="#manifesto" 
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer"
+          aria-label="Scroll to manifesto section"
+        >
+          <div className="flex flex-col items-center gap-2">
+            <svg className="w-8 h-8 text-[#1F7A8C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
             </svg>
-          </a>
-        </div>
+          </div>
+        </a>
       </section>
       
        {/* Why We Exist */}
