@@ -34,9 +34,9 @@ body {
   font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
 }
 
-/* Wavy dotted background */
+/* Wavy dotted background - simple and visible */
 .water-dots {
-  background-image: radial-gradient(circle, #1F7A8C15 1px, transparent 1px);
+  background-image: radial-gradient(circle, #1F7A8C35 1.5px, transparent 1.5px);
   background-size: 30px 30px;
   position: relative;
 }
@@ -53,19 +53,7 @@ body {
     rgba(31, 122, 140, 0.03) 20%, 
     transparent 100%
   );
-  animation: wave 15s ease-in-out infinite;
   pointer-events: none;
-}
-
-@keyframes wave {
-  0%, 100% {
-    transform: translateY(0);
-    opacity: 0.3;
-  }
-  50% {
-    transform: translateY(-10px);
-    opacity: 0.5;
-  }
 }
 
 /* Ripple underline effect */
@@ -126,4 +114,58 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--eucalyptus);
+}
+
+/* Kayak animation - simple and clean */
+.kayak-float {
+  position: absolute;
+  top: 10vh;
+  left: -10vw;
+  width: 250px;
+  height: 250px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.8;
+  animation: kayakFloatSimple 60s linear infinite;
+}
+
+@keyframes kayakFloatSimple {
+  0% {
+    transform: translate(0, 0) rotate(180deg);
+  }
+  10% {
+    transform: translate(12vw, 2vh) rotate(185deg);
+  }
+  20% {
+    transform: translate(25vw, -1vh) rotate(175deg);
+  }
+  30% {
+    transform: translate(38vw, 3vh) rotate(183deg);
+  }
+  40% {
+    transform: translate(50vw, 1vh) rotate(179deg);
+  }
+  50% {
+    transform: translate(63vw, 4vh) rotate(181deg);
+  }
+  60% {
+    transform: translate(75vw, 0vh) rotate(180deg);
+  }
+  70% {
+    transform: translate(87vw, 2vh) rotate(182deg);
+  }
+  80% {
+    transform: translate(98vw, 1vh) rotate(179deg);
+  }
+  90% {
+    transform: translate(108vw, 3vh) rotate(181deg);
+  }
+  100% {
+    transform: translate(115vw, 2vh) rotate(180deg);
+  }
+}
+
+/* Hide second kayak if it exists */
+.kayak-float-2 {
+  display: none;
 }

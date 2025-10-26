@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { KayakAnimation } from './components/KayakAnimation';
 
 // Configuration URLs (can be moved to environment variables)
 const CONFIG = {
@@ -28,7 +29,7 @@ const HOUSE_RULES = [
   { icon: '🚀', title: 'Default to Build', description: 'Progress over perfection; ship weekly.' },
   { icon: '🧹', title: 'Care for the Commons', description: 'Clean as you go; shared responsibility.' },
   { icon: '🏠', title: 'Host with Heart', description: 'Guests via sign-up; introduce visitors.' },
-  { icon: '💪', title: 'Health First', description: 'Sleep, stretch, sun; don\'t burn out.' },
+  { icon: '💪', title: 'Health First', description: 'Sleep, stretch, sun; don&apos;t burn out.' },
   { icon: '💬', title: 'Kind Candor', description: 'Feedback that helps people win.' },
 ];
 
@@ -36,7 +37,7 @@ const HOUSE_RULES = [
 const FAQ_ITEMS = [
   {
     question: 'Who is it for?',
-    answer: 'Billabong is for builders, researchers, and creators with high agency, intensity, ambition, and kindness. If you\'re working on something that matters and want to do it alongside others, this is for you.',
+    answer: 'Billabong is for builders, researchers, and creators with high agency, intensity, ambition, and kindness. If you&apos;re working on something that matters and want to do it alongside others, this is for you.',
   },
   {
     question: 'How long is the residency?',
@@ -61,6 +62,7 @@ export default function Home() {
   const [emailStatus, setEmailStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [wifiDialogOpen, setWifiDialogOpen] = useState(false);
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,33 +84,56 @@ export default function Home() {
 
   return (
     <div className="water-dots min-h-screen">
+      {/* Wifi Dialog */}
+      {wifiDialogOpen && (
+        <div 
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setWifiDialogOpen(false)}
+        >
+          <div 
+            className="bg-white rounded-xl p-8 max-w-md w-full shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="font-heading font-semibold text-2xl text-[#0D1B2A] mb-4">
+              WiFi Access
+            </h3>
+            <p className="font-body text-[#1A1A1A]/80 leading-relaxed mb-6">
+              We have public wifi throughout the house. Connect to <strong className="text-[#1F7A8C]">billabong_homies</strong>, there is no password.
+            </p>
+            <button
+              onClick={() => setWifiDialogOpen(false)}
+              className="w-full px-6 py-3 bg-[#1F7A8C] text-white rounded-full font-medium hover:bg-[#0D1B2A] transition-all"
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
+      
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-[#F7F8F5]/90 backdrop-blur-sm border-b border-[#1F7A8C]/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <a href="#hero" className="font-heading font-bold text-xl text-[#0D1B2A]">
-              Billabong
+              billabong
             </a>
             
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8">
-              <a href="#about" className="ripple-underline text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C] transition-colors">
-                About
+              <a href="/house-rules" className="ripple-underline text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C] transition-colors">
+                house rules
               </a>
-              <a href="#residency" className="ripple-underline text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C] transition-colors">
-                Residency
+              <a href="/residents" className="ripple-underline text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C] transition-colors">
+                residents
               </a>
-              <a href="#residents" className="ripple-underline text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C] transition-colors">
-                Residents
-              </a>
-              <a href="#location" className="ripple-underline text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C] transition-colors">
-                Location
+              <a href="/info" className="ripple-underline text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C] transition-colors">
+                info
               </a>
               <a 
                 href={CONFIG.apply_url} 
                 className="px-6 py-2 bg-[#1F7A8C] text-white rounded-full font-medium text-sm hover:bg-[#0D1B2A] transition-all hover:shadow-lg"
               >
-                Apply Now
+                apply now
               </a>
             </div>
 
@@ -158,6 +183,9 @@ export default function Home() {
 
       {/* Hero Section */}
       <section id="hero" className="relative min-h-[90vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden">
+        {/* Kayak Animation - in hero background */}
+        <KayakAnimation />
+        
         <div className="absolute inset-0 bg-gradient-to-br from-[#1F7A8C]/5 via-transparent to-[#6C8C64]/5" />
         <div className="relative z-10 max-w-5xl mx-auto text-center">
           <div className="mb-8">
@@ -170,21 +198,23 @@ export default function Home() {
             />
           </div>
           <h1 className="font-heading font-bold text-5xl sm:text-6xl lg:text-7xl text-[#0D1B2A] mb-6 leading-tight">
-            Billabong — where momentum gathers.
+            where momentum gathers.
           </h1>
           <p className="font-body text-lg sm:text-xl text-[#1A1A1A]/80 mb-8 max-w-3xl mx-auto leading-relaxed">
-            A riverfront residency home in Drummoyne for builders, researchers, and creators. Focus hard. Ship together.
+            a waterfront residency home in Sydney for builders, researchers, and creators. 
           </p>
           <p className="font-heading text-2xl sm:text-3xl text-[#1F7A8C] mb-12 font-semibold">
-            Make waves, together.
+            you can just do things.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <a 
-              href={CONFIG.apply_url}
+            
+            <button 
+              onClick={() => setWifiDialogOpen(true)}
               className="px-8 py-4 bg-[#1F7A8C] text-white rounded-full font-heading font-semibold text-lg hover:bg-[#0D1B2A] transition-all hover:shadow-2xl hover:scale-105"
             >
-              Apply Now
-            </a>
+              connect &rarr; <span className="text-xl">☁️</span>
+            </button>
+
             <a 
               href={CONFIG.events_url}
               className="px-8 py-4 border-2 border-[#1F7A8C] text-[#1F7A8C] rounded-full font-heading font-semibold text-lg hover:bg-[#1F7A8C] hover:text-white transition-all"
@@ -201,22 +231,41 @@ export default function Home() {
           </a>
         </div>
       </section>
+       {/* Why We Exist */}
+       <section id="manifesto" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-gradient-to-br from-[#0D1B2A] to-[#1F7A8C] rounded-2xl p-12 sm:p-16 text-white shadow-2xl">
+            <h2 className="font-heading font-bold text-3xl sm:text-4xl mb-6">
+              why we exist
+            </h2>
+            <blockquote className="font-body text-lg sm:text-xl leading-relaxed mb-6 opacity-90">
+              &quot;the world&apos;s hardest problems aren&apos;t solved for lack of people but for lack of places to truly experiment. breaking free to build is liberating - and lonely. we create spaces where you don&apos;t do it alone.&quot;
+            </blockquote>
+            <a 
+              href={CONFIG.arrayah_home_url}
+              className="inline-block ripple-underline text-[#E9DCC2] font-medium hover:text-white transition-colors"
+            >
+              Learn about Arrayah →
+            </a>
+          </div>
+        </div>
+      </section>
 
       {/* About Billabong */}
       <section id="about" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-6xl mx-auto">
           <h2 className="font-heading font-bold text-4xl sm:text-5xl text-[#0D1B2A] mb-8 text-center">
-            About Billabong
+            about billabong
           </h2>
           <p className="font-body text-lg text-[#1A1A1A]/80 mb-16 max-w-3xl mx-auto text-center leading-relaxed">
-            Arrayah exists because big problems need brave spaces to experiment. Billabong is our Sydney river house — calm water outside, fierce focus inside.
+            big problems need brave spaces to experiment. billabong is our brave experiment, a meeting place for builders, researchers and creators
           </p>
           
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { title: 'High Agency', description: 'Own your time, own your outcomes.', icon: '⚡' },
-              { title: 'Intensity with Kindness', description: 'Work hard, support harder.', icon: '❤️' },
-              { title: 'Ambition, Locally Rooted', description: 'Build for a brighter future from Drummoyne.', icon: '🌊' },
+              { title: 'high agency', description: 'own your time, own your outcomes.', icon: '⚡' },
+              { title: 'wholistic building', description: 'work hard, live well', icon: '❤️' },
+              { title: 'ambition, locally rooted', description: 'build for a better future  🇦🇺', icon: '🌊' },
             ].map((value, idx) => (
               <div 
                 key={idx}
@@ -252,7 +301,7 @@ export default function Home() {
               <li className="flex items-start">
                 <span className="text-[#1F7A8C] font-bold text-xl mr-3">•</span>
                 <span className="font-body text-lg text-[#1A1A1A]/80">
-                  <strong>Who it's for:</strong> Builders, researchers, creators with high agency and ambition
+                  <strong>Who it&apos;s for:</strong> Builders, researchers, creators with high agency and ambition
                 </span>
               </li>
               <li className="flex items-start">
@@ -281,11 +330,14 @@ export default function Home() {
       {/* House Rules */}
       <section id="rules" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-6xl mx-auto">
-          <h2 className="font-heading font-bold text-4xl sm:text-5xl text-[#0D1B2A] mb-12 text-center">
+          <h2 className="font-heading font-bold text-4xl sm:text-5xl text-[#0D1B2A] mb-6 text-center">
             House Rules
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {HOUSE_RULES.map((rule, idx) => (
+          <p className="font-body text-lg text-[#1A1A1A]/70 mb-12 text-center max-w-2xl mx-auto">
+            Simple guidelines to help everyone focus and thrive together.
+          </p>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {HOUSE_RULES.slice(0, 3).map((rule, idx) => (
               <div 
                 key={idx}
                 className="bg-[#F7F8F5] rounded-xl p-6 hover:shadow-lg transition-all border border-[#1F7A8C]/10"
@@ -299,6 +351,14 @@ export default function Home() {
                 </p>
               </div>
             ))}
+          </div>
+          <div className="text-center">
+            <a 
+              href="/house-rules"
+              className="inline-block px-8 py-3 bg-[#1F7A8C] text-white rounded-full font-medium hover:bg-[#0D1B2A] transition-all"
+            >
+              View All House Rules
+            </a>
           </div>
         </div>
       </section>
@@ -325,7 +385,7 @@ export default function Home() {
       <section id="residents" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-6xl mx-auto">
           <h2 className="font-heading font-bold text-4xl sm:text-5xl text-[#0D1B2A] mb-4 text-center">
-            Who's Building at Billabong
+            Who&apos;s Building at Billabong
           </h2>
           <p className="font-body text-lg text-[#1A1A1A]/70 mb-12 text-center">
             Meet some of our current residents
@@ -436,25 +496,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Why We Exist */}
-      <section id="manifesto" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-gradient-to-br from-[#0D1B2A] to-[#1F7A8C] rounded-2xl p-12 sm:p-16 text-white shadow-2xl">
-            <h2 className="font-heading font-bold text-3xl sm:text-4xl mb-6">
-              Why We Exist
-            </h2>
-            <blockquote className="font-body text-lg sm:text-xl leading-relaxed mb-6 opacity-90">
-              "The world's hardest problems aren't solved for lack of people but for lack of places to truly experiment. Breaking free to build is liberating—and lonely. We make a space where you don't do it alone."
-            </blockquote>
-            <a 
-              href={CONFIG.arrayah_home_url}
-              className="inline-block ripple-underline text-[#E9DCC2] font-medium hover:text-white transition-colors"
-            >
-              Learn about Arrayah →
-            </a>
-          </div>
-        </div>
-      </section>
+     
 
       {/* Apply Section */}
       <section id="apply" className="py-20 px-4 sm:px-6 lg:px-8 bg-[#F7F8F5]">
@@ -463,7 +505,7 @@ export default function Home() {
             Apply
           </h2>
           <p className="font-body text-lg text-[#1A1A1A]/80 mb-12 text-center max-w-2xl mx-auto">
-            If you're a builder, researcher, or creator with high agency, intensity, ambition, and kindness—this is for you.
+            If you&apos;re a builder, researcher, or creator with high agency, intensity, ambition, and kindness—this is for you.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
@@ -525,7 +567,7 @@ export default function Home() {
             Keep in Touch
           </h2>
           <p className="font-body text-[#1A1A1A]/70 mb-8">
-            Occasional updates, no spam. Hear about new residents, events, and the momentum we're building.
+            Occasional updates, no spam. Hear about new residents, events, and the momentum we&apos;re building.
           </p>
           
           <form onSubmit={handleNewsletterSubmit} className="max-w-md mx-auto">
@@ -547,7 +589,7 @@ export default function Home() {
             </div>
             {emailStatus === 'success' && (
               <p className="mt-4 text-[#6C8C64] font-medium">
-                Thanks — we'll be in touch soon.
+                Thanks — we&apos;ll be in touch soon.
               </p>
             )}
             {emailStatus === 'error' && (
