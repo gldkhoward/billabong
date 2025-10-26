@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+:root {
+  /* Billabong Color Palette */
+  --deep-indigo: #0D1B2A;
+  --river-teal: #1F7A8C;
+  --eucalyptus: #6C8C64;
+  --sand: #E9DCC2;
+  --foam: #F7F8F5;
+  --charcoal: #1A1A1A;
+  
+  --background: #F7F8F5;
+  --foreground: #1A1A1A;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-heading: var(--font-space-grotesk);
+  --font-body: var(--font-inter);
+  
+  /* Custom colors for Tailwind */
+  --color-deep-indigo: #0D1B2A;
+  --color-river-teal: #1F7A8C;
+  --color-eucalyptus: #6C8C64;
+  --color-sand: #E9DCC2;
+  --color-foam: #F7F8F5;
+  --color-charcoal: #1A1A1A;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+}
+
+/* Wavy dotted background */
+.water-dots {
+  background-image: radial-gradient(circle, #1F7A8C15 1px, transparent 1px);
+  background-size: 30px 30px;
+  position: relative;
+}
+
+.water-dots::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, 
+    transparent 0%, 
+    rgba(31, 122, 140, 0.03) 20%, 
+    transparent 100%
+  );
+  animation: wave 15s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes wave {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-10px);
+    opacity: 0.5;
+  }
+}
+
+/* Ripple underline effect */
+.ripple-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.ripple-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #1F7A8C, #6C8C64);
+  transition: width 0.3s ease;
+}
+
+.ripple-underline:hover::after {
+  width: 100%;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Fade in on scroll animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--foam);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--river-teal);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--eucalyptus);
+}
