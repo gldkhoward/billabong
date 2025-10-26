@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { KayakAnimation } from './components/KayakAnimation';
+import Link from 'next/link';
 
 // Configuration URLs (can be moved to environment variables)
 const CONFIG = {
@@ -78,7 +79,13 @@ export default function Home() {
               WiFi Access
             </h3>
             <p className="font-body text-[#1A1A1A]/80 leading-relaxed mb-6">
-              We have public wifi throughout the house. Connect to <strong className="text-[#1F7A8C]">billabong_homies</strong>, there is no password.
+              we have wifi throughout the house
+            </p>
+            <p className="font-body text-[#1A1A1A]/80 leading-relaxed mb-6">
+              network: <strong className="text-[#1F7A8C]">billabong_homies</strong>
+            </p>
+            <p className="font-body text-[#1A1A1A]/80 leading-relaxed mb-6"> 
+              password: <strong className="text-[#1F7A8C]">billabong1</strong>
             </p>
             <button
               onClick={() => setWifiDialogOpen(false)}
@@ -106,13 +113,11 @@ export default function Home() {
               <a href="/residents" className="ripple-underline text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C] transition-colors">
                 residents
               </a>
-
-              <a 
-                href={CONFIG.apply_url} 
-                className="px-6 py-2 bg-[#1F7A8C] text-white rounded-full font-medium text-sm hover:bg-[#0D1B2A] transition-all hover:shadow-lg"
-              >
+              <Link href="/guests" className="ripple-underline text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C] transition-colors">
+                guests</Link>
+              <Link href={CONFIG.apply_url} className="px-6 py-2 bg-[#1F7A8C] text-white rounded-full font-medium text-sm hover:bg-[#0D1B2A] transition-all hover:shadow-lg ripple-underline text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C] transition-colors">
                 apply now
-              </a>
+              </Link>
             </div>
 
             {/* Mobile menu button */}
@@ -196,7 +201,7 @@ export default function Home() {
             </a>
           </div>
         </div>
-        <a 
+        <Link 
           href="#manifesto" 
           className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer"
           aria-label="Scroll to manifesto section"
@@ -206,7 +211,7 @@ export default function Home() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
             </svg>
           </div>
-        </a>
+        </Link>
       </section>
       
        {/* Why We Exist */}

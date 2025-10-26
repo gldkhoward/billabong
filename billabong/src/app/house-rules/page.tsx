@@ -11,12 +11,12 @@ export default function HouseRules() {
       description: "be mindful that this is a home first, coworking space second. respect residents' privacy and comfort at all times.",
     },
     {
-      title: "honor focus time",
+      title: "respect focus",
       description: "headphones or earphones mean do not disturb. when someone is locked in and working, let them maintain their flow state.",
     },
     {
       title: "quiet coworking",
-      description: "coworking areas are for focused work. keep noise to a minimum. take calls and meetings to common areas or living room tables.",
+      description: "coworking areas are for focused work. keep noise to a minimum. take calls, meetings, or socializing to common areas or outside.",
     },
     {
       title: "resident zones",
@@ -24,7 +24,7 @@ export default function HouseRules() {
     },
     {
       title: "kitchen access",
-      description: "non-residents should use the fridge in the coworking area. residents have designated spaces in the main kitchen.",
+      description: "if you want to use the kichen, utensils or appliances, ask a resident and ensure you clean up after youself (wash your items, put them away, etc).",
     },
   ];
 
