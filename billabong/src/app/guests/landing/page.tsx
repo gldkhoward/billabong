@@ -399,7 +399,7 @@ export default function GuestsPage() {
 
               <div className="bg-white rounded-2xl p-4 sm:p-8 md:p-12 shadow-xl max-w-2xl mx-auto">
                 <div className="relative autocomplete-container">
-                  <label className="block font-heading font-semibold text-lg text-deep-indigo mb-2">
+                  <label className="block font-heading font-semibold text-base sm:text-lg text-deep-indigo mb-2">
                     What&apos;s your name?
                   </label>
                   <input
@@ -412,7 +412,7 @@ export default function GuestsPage() {
                     onFocus={() => setShowDropdown(true)}
                     placeholder="Start typing your name..."
                     disabled={isLoadingHomies}
-                    className="w-full px-6 py-4 border-2 border-river-teal/30 rounded-xl font-body text-lg focus:border-river-teal focus:outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full px-4 sm:px-6 py-3 sm:py-4 border-2 border-river-teal/30 rounded-xl font-body text-base sm:text-lg focus:border-river-teal focus:outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   />
 
                   {/* Autocomplete Dropdown */}
@@ -456,7 +456,7 @@ export default function GuestsPage() {
                   )}
                 </div>
 
-                <div className="flex gap-4 mt-8">
+                <div className="flex gap-3 sm:gap-4 mt-6 sm:mt-8">
                   <button
                     type="button"
                     onClick={() => {
@@ -466,7 +466,7 @@ export default function GuestsPage() {
                       setAllHomies([]);
                       setIsLoadingHomies(false);
                     }}
-                    className="flex-1 px-6 py-4 border-2 border-river-teal text-river-teal rounded-xl font-heading font-semibold hover:bg-river-teal hover:text-white transition-all"
+                    className="flex-1 px-4 sm:px-6 py-3 sm:py-4 border-2 border-river-teal text-river-teal rounded-xl font-heading text-sm sm:text-base font-semibold hover:bg-river-teal hover:text-white transition-all"
                   >
                     Back
                   </button>
@@ -562,17 +562,17 @@ export default function GuestsPage() {
                 </div>
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex gap-3 sm:gap-4">
                 <button
                   onClick={() => setStep('welcome')}
-                  className="flex-1 px-6 py-4 border-2 border-river-teal text-river-teal rounded-xl font-heading font-semibold hover:bg-river-teal hover:text-white transition-all"
+                  className="flex-1 px-4 sm:px-6 py-3 sm:py-4 border-2 border-river-teal text-river-teal rounded-xl font-heading text-sm sm:text-base font-semibold hover:bg-river-teal hover:text-white transition-all"
                 >
                   Back
                 </button>
                 <button
                   onClick={() => setStep('personal-info')}
                   disabled={!homieData.agreedToRules}
-                  className="flex-1 px-6 py-4 bg-river-teal text-white rounded-xl font-heading font-semibold hover:bg-deep-indigo transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 px-4 sm:px-6 py-3 sm:py-4 bg-river-teal text-white rounded-xl font-heading text-sm sm:text-base font-semibold hover:bg-deep-indigo transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Continue
                 </button>
@@ -667,17 +667,17 @@ export default function GuestsPage() {
                   </div>
                 </div>
 
-                <div className="flex gap-4 mt-8">
+                <div className="flex gap-3 sm:gap-4 mt-6 sm:mt-8">
                   <button
                     type="button"
                     onClick={() => setStep('rules')}
-                    className="flex-1 px-6 py-4 border-2 border-river-teal text-river-teal rounded-xl font-heading font-semibold hover:bg-river-teal hover:text-white transition-all"
+                    className="flex-1 px-4 sm:px-6 py-3 sm:py-4 border-2 border-river-teal text-river-teal rounded-xl font-heading text-sm sm:text-base font-semibold hover:bg-river-teal hover:text-white transition-all"
                   >
                     Back
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 px-6 py-4 bg-river-teal text-white rounded-xl font-heading font-semibold hover:bg-deep-indigo transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 px-4 sm:px-6 py-3 sm:py-4 bg-river-teal text-white rounded-xl font-heading text-sm sm:text-base font-semibold hover:bg-deep-indigo transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Continue
                   </button>
@@ -712,11 +712,11 @@ export default function GuestsPage() {
                   </div>
                 )}
 
-                <div className="mt-8">
+                <div className="mt-6 sm:mt-8">
                   <button
                     type="button"
                     onClick={() => setStep('personal-info')}
-                    className="w-full px-6 py-4 border-2 border-river-teal text-river-teal rounded-xl font-heading font-semibold hover:bg-river-teal hover:text-white transition-all"
+                    className="w-full px-4 sm:px-6 py-3 sm:py-4 border-2 border-river-teal text-river-teal rounded-xl font-heading text-sm sm:text-base font-semibold hover:bg-river-teal hover:text-white transition-all"
                   >
                     ← Back
                   </button>
@@ -789,21 +789,21 @@ export default function GuestsPage() {
                   </p>
                 )}
 
-                <div className="flex gap-4 mt-8">
+                <div className="flex gap-3 sm:gap-4 mt-6 sm:mt-8">
                   <button
                     type="button"
                     onClick={() => setStep('profile-picture')}
                     disabled={createHomie.isPending}
-                    className="flex-1 px-6 py-4 border-2 border-river-teal text-river-teal rounded-xl font-heading font-semibold hover:bg-river-teal hover:text-white transition-all disabled:opacity-50"
+                    className="flex-1 px-4 sm:px-6 py-3 sm:py-4 border-2 border-river-teal text-river-teal rounded-xl font-heading text-sm sm:text-base font-semibold hover:bg-river-teal hover:text-white transition-all disabled:opacity-50"
                   >
                     Back
                   </button>
                   <button
                     type="submit"
                     disabled={createHomie.isPending || createVisit.isPending || uploadingImage}
-                    className="flex-1 px-6 py-4 bg-river-teal text-white rounded-xl font-heading font-semibold hover:bg-deep-indigo transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 px-4 sm:px-6 py-3 sm:py-4 bg-river-teal text-white rounded-xl font-heading text-sm sm:text-base font-semibold hover:bg-deep-indigo transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {uploadingImage ? 'Uploading Photo...' : createHomie.isPending ? 'Saving...' : 'Complete Check-In'}
+                    {uploadingImage ? 'Uploading...' : createHomie.isPending ? 'Saving...' : 'Complete'}
                   </button>
                 </div>
               </form>
@@ -859,22 +859,22 @@ export default function GuestsPage() {
                   </p>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   <Link
                     href="/house-rules"
-                    className="block px-6 py-3 border-2 border-river-teal text-river-teal rounded-xl font-heading font-semibold hover:bg-river-teal hover:text-white transition-all"
+                    className="block px-4 sm:px-6 py-2.5 sm:py-3 border-2 border-river-teal text-river-teal rounded-xl font-heading text-sm sm:text-base font-semibold hover:bg-river-teal hover:text-white transition-all"
                   >
                     Review House Rules
                   </Link>
                   <Link
                     href="/residents"
-                    className="block px-6 py-3 border-2 border-river-teal text-river-teal rounded-xl font-heading font-semibold hover:bg-river-teal hover:text-white transition-all"
+                    className="block px-4 sm:px-6 py-2.5 sm:py-3 border-2 border-river-teal text-river-teal rounded-xl font-heading text-sm sm:text-base font-semibold hover:bg-river-teal hover:text-white transition-all"
                   >
                     Meet the Residents
                   </Link>
                   <Link
                     href="/"
-                    className="block px-6 py-4 bg-river-teal text-white rounded-xl font-heading font-semibold hover:bg-deep-indigo transition-all"
+                    className="block px-4 sm:px-6 py-2.5 sm:py-3 bg-river-teal text-white rounded-xl font-heading text-sm sm:text-base font-semibold hover:bg-deep-indigo transition-all"
                   >
                     Back to Home
                   </Link>

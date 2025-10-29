@@ -27,13 +27,13 @@ export const FormField = forwardRef<HTMLInputElement | HTMLTextAreaElement, Form
       }
     }, [prefix]);
 
-    const inputClasses = `w-full py-3 border-2 ${
+    const inputClasses = `w-full py-2.5 sm:py-3 border-2 ${
       error ? 'border-red-500' : 'border-river-teal/30'
-    } rounded-xl font-body text-base focus:border-river-teal focus:outline-none transition-all ${className || ''}`;
+    } rounded-xl font-body text-sm sm:text-base focus:border-river-teal focus:outline-none transition-all ${className || ''}`;
 
     return (
       <div>
-        <label className="block font-heading font-semibold text-lg text-deep-indigo mb-2">
+        <label className="block font-heading font-semibold text-base sm:text-lg text-deep-indigo mb-2">
           {label} {required && <span className="text-river-teal">*</span>}
         </label>
         
@@ -42,7 +42,7 @@ export const FormField = forwardRef<HTMLInputElement | HTMLTextAreaElement, Form
             ref={ref as React.Ref<HTMLTextAreaElement>}
             placeholder={placeholder}
             rows={rows || 3}
-            className={inputClasses + ' px-4 resize-none'}
+            className={inputClasses + ' px-3 sm:px-4 resize-none'}
             {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
           />
         ) : (
@@ -50,7 +50,7 @@ export const FormField = forwardRef<HTMLInputElement | HTMLTextAreaElement, Form
             {prefix && (
               <span 
                 ref={prefixRef}
-                className="absolute left-4 text-charcoal/50 font-body text-base leading-none pointer-events-none select-none"
+                className="absolute left-3 sm:left-4 text-charcoal/50 font-body text-sm sm:text-base leading-none pointer-events-none select-none"
               >
                 {prefix}
               </span>
@@ -62,8 +62,8 @@ export const FormField = forwardRef<HTMLInputElement | HTMLTextAreaElement, Form
               className={inputClasses + ' leading-none'}
               style={
                 prefix && prefixWidth > 0
-                  ? { paddingLeft: `${prefixWidth + 20}px`, paddingRight: '16px' }
-                  : { paddingLeft: '16px', paddingRight: '16px' }
+                  ? { paddingLeft: `${prefixWidth + 16}px`, paddingRight: '12px' }
+                  : { paddingLeft: '12px', paddingRight: '12px' }
               }
               {...(props as React.InputHTMLAttributes<HTMLInputElement>)}
             />
