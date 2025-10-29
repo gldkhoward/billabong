@@ -185,24 +185,24 @@ export function ProfileImageCapture({ onImageCaptured, onSkip }: ProfileImageCap
 
       {/* Choose Mode */}
       {mode === 'choose' && (
-        <div className="space-y-4">
-          <div className="text-center mb-6">
-            <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-river-teal/10 flex items-center justify-center">
-              <svg className="w-16 h-16 text-river-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="space-y-3 sm:space-y-4">
+          <div className="text-center mb-4 sm:mb-6">
+            <div className="w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-3 sm:mb-4 rounded-full bg-river-teal/10 flex items-center justify-center">
+              <svg className="w-12 h-12 sm:w-16 sm:h-16 text-river-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
             </div>
-            <p className="font-body text-charcoal/70 text-sm">
+            <p className="font-body text-charcoal/70 text-xs sm:text-sm px-2">
               Take a photo somewhere in the house. It helps people recognize you!
             </p>
           </div>
 
           <button
             onClick={startCamera}
-            className="w-full px-6 py-4 bg-river-teal text-white rounded-xl font-heading font-semibold hover:bg-deep-indigo transition-all flex items-center justify-center gap-3"
+            className="w-full px-4 sm:px-6 py-3 sm:py-4 bg-river-teal text-white rounded-xl font-heading text-sm sm:text-base font-semibold hover:bg-deep-indigo transition-all flex items-center justify-center gap-2 sm:gap-3"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
@@ -211,9 +211,9 @@ export function ProfileImageCapture({ onImageCaptured, onSkip }: ProfileImageCap
 
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="w-full px-6 py-4 border-2 border-river-teal text-river-teal rounded-xl font-heading font-semibold hover:bg-river-teal hover:text-white transition-all flex items-center justify-center gap-3"
+            className="w-full px-4 sm:px-6 py-3 sm:py-4 border-2 border-river-teal text-river-teal rounded-xl font-heading text-sm sm:text-base font-semibold hover:bg-river-teal hover:text-white transition-all flex items-center justify-center gap-2 sm:gap-3"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
             </svg>
             Upload Photo
@@ -231,8 +231,8 @@ export function ProfileImageCapture({ onImageCaptured, onSkip }: ProfileImageCap
 
       {/* Camera Mode */}
       {mode === 'camera' && (
-        <div className="space-y-4">
-          <div className="relative rounded-2xl overflow-hidden bg-charcoal aspect-square">
+        <div className="space-y-3 sm:space-y-4">
+          <div className="relative rounded-xl sm:rounded-2xl overflow-hidden bg-charcoal aspect-square">
             <video
               ref={videoRef}
               autoPlay
@@ -243,29 +243,29 @@ export function ProfileImageCapture({ onImageCaptured, onSkip }: ProfileImageCap
             {/* Square crop overlay */}
             <div className="absolute inset-0 pointer-events-none">
               <div className="absolute inset-0 bg-black/40" />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] aspect-square border-4 border-white/80 rounded-2xl shadow-2xl">
-                <div className="absolute top-2 left-2 w-8 h-8 border-t-4 border-l-4 border-river-teal" />
-                <div className="absolute top-2 right-2 w-8 h-8 border-t-4 border-r-4 border-river-teal" />
-                <div className="absolute bottom-2 left-2 w-8 h-8 border-b-4 border-l-4 border-river-teal" />
-                <div className="absolute bottom-2 right-2 w-8 h-8 border-b-4 border-r-4 border-river-teal" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] aspect-square border-2 sm:border-4 border-white/80 rounded-xl sm:rounded-2xl shadow-2xl">
+                <div className="absolute top-1 left-1 sm:top-2 sm:left-2 w-6 h-6 sm:w-8 sm:h-8 border-t-2 border-l-2 sm:border-t-4 sm:border-l-4 border-river-teal" />
+                <div className="absolute top-1 right-1 sm:top-2 sm:right-2 w-6 h-6 sm:w-8 sm:h-8 border-t-2 border-r-2 sm:border-t-4 sm:border-r-4 border-river-teal" />
+                <div className="absolute bottom-1 left-1 sm:bottom-2 sm:left-2 w-6 h-6 sm:w-8 sm:h-8 border-b-2 border-l-2 sm:border-b-4 sm:border-l-4 border-river-teal" />
+                <div className="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 w-6 h-6 sm:w-8 sm:h-8 border-b-2 border-r-2 sm:border-b-4 sm:border-r-4 border-river-teal" />
               </div>
             </div>
           </div>
 
           <div className="text-center">
             {!videoReady && (
-              <p className="font-body text-sm text-charcoal/70 mb-2">
+              <p className="font-body text-xs sm:text-sm text-charcoal/70 mb-2 px-2">
                 📹 Loading camera...
               </p>
             )}
             {videoReady && (
-              <p className="font-body text-sm text-river-teal font-semibold mb-2">
+              <p className="font-body text-xs sm:text-sm text-river-teal font-semibold mb-2 px-2">
                 ✓ Camera ready! Position your face in the square
               </p>
             )}
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex gap-3 sm:gap-4">
             <button
               onClick={() => {
                 if (stream) {
@@ -275,14 +275,14 @@ export function ProfileImageCapture({ onImageCaptured, onSkip }: ProfileImageCap
                 setVideoReady(false);
                 setMode('choose');
               }}
-              className="flex-1 px-6 py-4 border-2 border-charcoal/20 text-charcoal rounded-xl font-heading font-semibold hover:bg-charcoal/5 transition-all"
+              className="flex-1 px-4 sm:px-6 py-3 sm:py-4 border-2 border-charcoal/20 text-charcoal rounded-xl font-heading text-sm sm:text-base font-semibold hover:bg-charcoal/5 transition-all"
             >
               Cancel
             </button>
             <button
               onClick={capturePhoto}
               disabled={!videoReady}
-              className="flex-1 px-6 py-4 bg-river-teal text-white rounded-xl font-heading font-semibold hover:bg-deep-indigo transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-4 sm:px-6 py-3 sm:py-4 bg-river-teal text-white rounded-xl font-heading text-sm sm:text-base font-semibold hover:bg-deep-indigo transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {videoReady ? 'Capture' : 'Loading...'}
             </button>
@@ -292,8 +292,8 @@ export function ProfileImageCapture({ onImageCaptured, onSkip }: ProfileImageCap
 
       {/* Preview Mode */}
       {mode === 'preview' && capturedImage && (
-        <div className="space-y-4">
-          <div className="relative rounded-2xl overflow-hidden bg-charcoal aspect-square">
+        <div className="space-y-3 sm:space-y-4">
+          <div className="relative rounded-xl sm:rounded-2xl overflow-hidden bg-charcoal aspect-square">
             <img
               src={capturedImage}
               alt="Preview"
@@ -303,9 +303,9 @@ export function ProfileImageCapture({ onImageCaptured, onSkip }: ProfileImageCap
             {/* Square crop indicator */}
             <div className="absolute inset-0 pointer-events-none">
               <div className="absolute inset-0 bg-black/20" />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] aspect-square border-4 border-white/80 rounded-2xl">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <p className="text-white text-sm font-body bg-black/50 px-3 py-1 rounded-lg">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] aspect-square border-2 sm:border-4 border-white/80 rounded-xl sm:rounded-2xl">
+                <div className="absolute inset-0 flex items-center justify-center px-2">
+                  <p className="text-white text-xs sm:text-sm font-body bg-black/50 px-2 sm:px-3 py-1 rounded-lg text-center">
                     This area will be your profile photo
                   </p>
                 </div>
@@ -313,18 +313,18 @@ export function ProfileImageCapture({ onImageCaptured, onSkip }: ProfileImageCap
             </div>
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex gap-3 sm:gap-4">
             <button
               onClick={retake}
               disabled={processing}
-              className="flex-1 px-6 py-4 border-2 border-charcoal/20 text-charcoal rounded-xl font-heading font-semibold hover:bg-charcoal/5 transition-all disabled:opacity-50"
+              className="flex-1 px-4 sm:px-6 py-3 sm:py-4 border-2 border-charcoal/20 text-charcoal rounded-xl font-heading text-sm sm:text-base font-semibold hover:bg-charcoal/5 transition-all disabled:opacity-50"
             >
               Retake
             </button>
             <button
               onClick={confirmImage}
               disabled={processing}
-              className="flex-1 px-6 py-4 bg-river-teal text-white rounded-xl font-heading font-semibold hover:bg-deep-indigo transition-all disabled:opacity-50"
+              className="flex-1 px-4 sm:px-6 py-3 sm:py-4 bg-river-teal text-white rounded-xl font-heading text-sm sm:text-base font-semibold hover:bg-deep-indigo transition-all disabled:opacity-50"
             >
               {processing ? 'Processing...' : 'Looks Good!'}
             </button>
@@ -336,7 +336,7 @@ export function ProfileImageCapture({ onImageCaptured, onSkip }: ProfileImageCap
       {mode === 'choose' && (
         <button
           onClick={onSkip}
-          className="w-full text-center text-sm text-charcoal/60 hover:text-river-teal transition-colors font-body"
+          className="w-full text-center text-xs sm:text-sm text-charcoal/60 hover:text-river-teal transition-colors font-body"
         >
           Skip for now →
         </button>

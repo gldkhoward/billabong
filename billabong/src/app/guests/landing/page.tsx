@@ -333,51 +333,51 @@ export default function GuestsPage() {
         </div>
       )}
 
-      <main className="flex-1 overflow-y-auto py-8 sm:py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+      <main className="flex-1 overflow-y-auto py-4 sm:py-8 md:py-12 px-3 sm:px-4 md:px-6 lg:px-8 flex items-center justify-center">
         <div className="max-w-4xl mx-auto w-full">
           
           {/* Welcome Step */}
           {step === 'welcome' && (
             <div className="text-center animate-fade-in">
-              <div className="mb-8">
+              <div className="mb-6 sm:mb-8">
                 <Image 
                   src="/arrayh_logo.jpg" 
                   alt="Billabong House" 
-                  width={100} 
-                  height={100}
-                  className="mx-auto rounded-2xl shadow-xl"
+                  width={80} 
+                  height={80}
+                  className="mx-auto rounded-2xl shadow-xl sm:w-[100px] sm:h-[100px]"
                 />
               </div>
-              <h1 className="font-heading font-bold text-4xl sm:text-5xl lg:text-6xl text-deep-indigo mb-6">
+              <h1 className="font-heading font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-deep-indigo mb-4 sm:mb-6 px-2">
                 welcome to billabong 🌊
               </h1>
-              <p className="font-body text-lg sm:text-xl text-charcoal/80 mb-12 max-w-2xl mx-auto leading-relaxed">
+              <p className="font-body text-base sm:text-lg md:text-xl text-charcoal/80 mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed px-4">
                 we&apos;re excited to have you here. let&apos;s get you set up and checked in.
               </p>
 
-              <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+              <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 max-w-2xl mx-auto">
                 <button
                   onClick={() => setStep('returning-check')}
-                  className="group bg-white rounded-2xl p-8 border-2 border-river-teal hover:border-deep-indigo transition-all hover:shadow-xl"
+                  className="group bg-white rounded-2xl p-6 sm:p-8 border-2 border-river-teal hover:border-deep-indigo transition-all hover:shadow-xl"
                 >
-                  <div className="text-4xl mb-4">👋</div>
-                  <h2 className="font-heading font-semibold text-2xl text-deep-indigo mb-3">
+                  <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">👋</div>
+                  <h2 className="font-heading font-semibold text-xl sm:text-2xl text-deep-indigo mb-2 sm:mb-3">
                     returning guest
                   </h2>
-                  <p className="font-body text-charcoal/70">
+                  <p className="font-body text-sm sm:text-base text-charcoal/70">
                     quick check-in if you&apos;ve been here before
                   </p>
                 </button>
 
                 <button
                   onClick={() => setStep('rules')}
-                  className="group bg-white rounded-2xl p-8 border-2 border-eucalyptus hover:border-deep-indigo transition-all hover:shadow-xl"
+                  className="group bg-white rounded-2xl p-6 sm:p-8 border-2 border-eucalyptus hover:border-deep-indigo transition-all hover:shadow-xl"
                 >
-                  <div className="text-4xl mb-4">✨</div>
-                  <h2 className="font-heading font-semibold text-2xl text-deep-indigo mb-3">
+                  <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">✨</div>
+                  <h2 className="font-heading font-semibold text-xl sm:text-2xl text-deep-indigo mb-2 sm:mb-3">
                     first time here
                   </h2>
-                  <p className="font-body text-charcoal/70">
+                  <p className="font-body text-sm sm:text-base text-charcoal/70">
                     let&apos;s get you onboarded
                   </p>
                 </button>
@@ -388,16 +388,16 @@ export default function GuestsPage() {
           {/* Returning Guest Check */}
           {step === 'returning-check' && (
             <div className="animate-fade-in">
-              <div className="text-center mb-12">
-                <h1 className="font-heading font-bold text-4xl sm:text-5xl text-deep-indigo mb-4">
+              <div className="text-center mb-8 sm:mb-12 px-2">
+                <h1 className="font-heading font-bold text-3xl sm:text-4xl md:text-5xl text-deep-indigo mb-3 sm:mb-4">
                   welcome back!
                 </h1>
-                <p className="font-body text-lg text-charcoal/80">
+                <p className="font-body text-base sm:text-lg text-charcoal/80">
                   {isLoadingHomies ? 'loading guests...' : 'search for your name'}
                 </p>
               </div>
 
-              <div className="bg-white rounded-2xl p-8 sm:p-12 shadow-xl max-w-2xl mx-auto">
+              <div className="bg-white rounded-2xl p-4 sm:p-8 md:p-12 shadow-xl max-w-2xl mx-auto">
                 <div className="relative autocomplete-container">
                   <label className="block font-heading font-semibold text-lg text-deep-indigo mb-2">
                     What&apos;s your name?
@@ -417,21 +417,21 @@ export default function GuestsPage() {
 
                   {/* Autocomplete Dropdown */}
                   {showDropdown && searchQuery.trim() && (
-                    <div className="absolute z-50 w-full mt-2 bg-white border-2 border-river-teal/30 rounded-xl shadow-2xl max-h-80 overflow-y-auto">
+                    <div className="absolute z-50 w-full mt-2 bg-white border-2 border-river-teal/30 rounded-xl shadow-2xl max-h-60 sm:max-h-80 overflow-y-auto">
                       {filteredHomies.length > 0 ? (
-                        <div className="py-2">
+                        <div className="py-1 sm:py-2">
                           {filteredHomies.map((homie) => (
                             <button
                               key={homie.id}
                               type="button"
                               onClick={() => handleSelectHomie(homie)}
-                              className="w-full px-6 py-4 text-left hover:bg-river-teal/10 transition-colors border-b border-river-teal/10 last:border-0"
+                              className="w-full px-4 sm:px-6 py-3 sm:py-4 text-left hover:bg-river-teal/10 transition-colors border-b border-river-teal/10 last:border-0"
                             >
-                              <div className="font-heading font-semibold text-deep-indigo">
+                              <div className="font-heading font-semibold text-base sm:text-lg text-deep-indigo">
                                 {homie.first_name} {homie.last_name}
                               </div>
                               {homie.where_from && (
-                                <div className="text-sm text-charcoal/60 mt-1">
+                                <div className="text-xs sm:text-sm text-charcoal/60 mt-1">
                                   from {homie.where_from}
                                 </div>
                               )}
@@ -439,14 +439,14 @@ export default function GuestsPage() {
                           ))}
                         </div>
                       ) : (
-                        <div className="py-8 px-6 text-center">
-                          <p className="text-charcoal/60 font-body mb-4">
+                        <div className="py-6 sm:py-8 px-4 sm:px-6 text-center">
+                          <p className="text-charcoal/60 font-body text-sm sm:text-base mb-3 sm:mb-4">
                             No matches found for &quot;{searchQuery}&quot;
                           </p>
                           <button
                             type="button"
                             onClick={handleNotFound}
-                            className="px-6 py-3 bg-river-teal text-white rounded-xl font-heading font-semibold hover:bg-deep-indigo transition-all"
+                            className="px-4 sm:px-6 py-2 sm:py-3 bg-river-teal text-white rounded-xl font-heading text-sm sm:text-base font-semibold hover:bg-deep-indigo transition-all"
                           >
                             Continue as New Guest
                           </button>
@@ -490,16 +490,16 @@ export default function GuestsPage() {
           {/* House Rules Step */}
           {step === 'rules' && (
             <div className="animate-fade-in">
-              <div className="text-center mb-12">
-                <h1 className="font-heading font-bold text-4xl sm:text-5xl text-deep-indigo mb-4">
+              <div className="text-center mb-8 sm:mb-12 px-2">
+                <h1 className="font-heading font-bold text-3xl sm:text-4xl md:text-5xl text-deep-indigo mb-3 sm:mb-4">
                   house guidelines
                 </h1>
-                <p className="font-body text-lg text-charcoal/80">
+                <p className="font-body text-base sm:text-lg text-charcoal/80">
                   a few simple principles to help everyone thrive
                 </p>
               </div>
 
-              <div className="bg-white rounded-2xl p-8 sm:p-12 shadow-xl mb-8">
+              <div className="bg-white rounded-2xl p-4 sm:p-8 md:p-12 shadow-xl mb-6 sm:mb-8">
                 <div className="space-y-6 mb-8">
                   {[
                     {
@@ -533,13 +533,13 @@ export default function GuestsPage() {
                       description: 'ask before using kitchen. clean up thoroughly after.'
                     },
                   ].map((rule, idx) => (
-                    <div key={idx} className="flex gap-4 items-start">
-                      <div className="text-3xl shrink-0">{rule.icon}</div>
+                    <div key={idx} className="flex gap-3 sm:gap-4 items-start">
+                      <div className="text-2xl sm:text-3xl shrink-0">{rule.icon}</div>
                       <div>
-                        <h3 className="font-heading font-semibold text-lg text-deep-indigo mb-1">
+                        <h3 className="font-heading font-semibold text-base sm:text-lg text-deep-indigo mb-1">
                           {rule.title}
                         </h3>
-                        <p className="font-body text-charcoal/70">
+                        <p className="font-body text-sm sm:text-base text-charcoal/70">
                           {rule.description}
                         </p>
                       </div>
@@ -583,16 +583,16 @@ export default function GuestsPage() {
           {/* Personal Info Step */}
           {step === 'personal-info' && (
             <div className="animate-fade-in">
-              <div className="text-center mb-12">
-                <h1 className="font-heading font-bold text-4xl sm:text-5xl text-deep-indigo mb-4">
+              <div className="text-center mb-8 sm:mb-12 px-2">
+                <h1 className="font-heading font-bold text-3xl sm:text-4xl md:text-5xl text-deep-indigo mb-3 sm:mb-4">
                   tell us about you
                 </h1>
-                <p className="font-body text-lg text-charcoal/80">
+                <p className="font-body text-base sm:text-lg text-charcoal/80">
                   help us and other guests connect with you
                 </p>
               </div>
 
-              <form onSubmit={personalInfoForm.handleSubmit(onPersonalInfoSubmit)} className="bg-white rounded-2xl p-8 sm:p-12 shadow-xl mb-8">
+              <form onSubmit={personalInfoForm.handleSubmit(onPersonalInfoSubmit)} className="bg-white rounded-2xl p-4 sm:p-8 md:p-12 shadow-xl mb-6 sm:mb-8">
                 <div className="space-y-6">
                   {/* Basic Info */}
                   <div className="grid sm:grid-cols-2 gap-6">
@@ -689,16 +689,16 @@ export default function GuestsPage() {
           {/* Profile Picture Step */}
           {step === 'profile-picture' && (
             <div className="animate-fade-in">
-              <div className="text-center mb-12">
-                <h1 className="font-heading font-bold text-4xl sm:text-5xl text-deep-indigo mb-4">
+              <div className="text-center mb-8 sm:mb-12 px-2">
+                <h1 className="font-heading font-bold text-3xl sm:text-4xl md:text-5xl text-deep-indigo mb-3 sm:mb-4">
                   add your photo 📸
                 </h1>
-                <p className="font-body text-lg text-charcoal/80">
+                <p className="font-body text-base sm:text-lg text-charcoal/80">
                   snap a quick photo somewhere in the house
                 </p>
               </div>
 
-              <div className="bg-white rounded-2xl p-8 sm:p-12 shadow-xl mb-8 max-w-2xl mx-auto">
+              <div className="bg-white rounded-2xl p-4 sm:p-8 md:p-12 shadow-xl mb-6 sm:mb-8 max-w-2xl mx-auto">
                 <ProfileImageCapture
                   onImageCaptured={handleImageCaptured}
                   onSkip={handleSkipImage}
@@ -728,16 +728,16 @@ export default function GuestsPage() {
           {/* Profile Questions Step */}
           {step === 'profile-questions' && (
             <div className="animate-fade-in">
-              <div className="text-center mb-12">
-                <h1 className="font-heading font-bold text-4xl sm:text-5xl text-deep-indigo mb-4">
+              <div className="text-center mb-8 sm:mb-12 px-2">
+                <h1 className="font-heading font-bold text-3xl sm:text-4xl md:text-5xl text-deep-indigo mb-3 sm:mb-4">
                   your story
                 </h1>
-                <p className="font-body text-lg text-charcoal/80">
+                <p className="font-body text-base sm:text-lg text-charcoal/80">
                   help the community get to know you better
                 </p>
               </div>
 
-              <form onSubmit={profileForm.handleSubmit(onProfileSubmit)} className="bg-white rounded-2xl p-8 sm:p-12 shadow-xl mb-8">
+              <form onSubmit={profileForm.handleSubmit(onProfileSubmit)} className="bg-white rounded-2xl p-4 sm:p-8 md:p-12 shadow-xl mb-6 sm:mb-8">
                 <div className="space-y-8">
                   <FormField
                     label="What did you want to be when you grew up?"
@@ -813,49 +813,49 @@ export default function GuestsPage() {
           {/* Complete Step */}
           {step === 'complete' && (
             <div className="animate-fade-in text-center">
-              <div className="bg-white rounded-2xl p-8 sm:p-12 shadow-xl max-w-2xl mx-auto">
-                <div className="text-6xl mb-6">✅</div>
-                <h1 className="font-heading font-bold text-4xl sm:text-5xl text-deep-indigo mb-4">
+              <div className="bg-white rounded-2xl p-4 sm:p-8 md:p-12 shadow-xl max-w-2xl mx-auto">
+                <div className="text-5xl sm:text-6xl mb-4 sm:mb-6">✅</div>
+                <h1 className="font-heading font-bold text-3xl sm:text-4xl md:text-5xl text-deep-indigo mb-3 sm:mb-4 px-2">
                   you&apos;re all set!
                 </h1>
                 
                 {isReturning && visitHistory.data ? (
-                  <div className="mb-8">
-                    <p className="font-body text-xl text-charcoal/80 mb-6">
+                  <div className="mb-6 sm:mb-8 px-2">
+                    <p className="font-body text-lg sm:text-xl text-charcoal/80 mb-4 sm:mb-6">
                       welcome back, <span className="font-semibold text-river-teal">{homieData.firstName} {homieData.lastName}</span>! 
                     </p>
-                    <div className="bg-river-teal/10 rounded-xl p-6 mb-6">
-                      <p className="font-body text-charcoal/70">
+                    <div className="bg-river-teal/10 rounded-xl p-4 sm:p-6 mb-4 sm:mb-6">
+                      <p className="font-body text-sm sm:text-base text-charcoal/70">
                         <span className="font-semibold">Visit #{visitHistory.data.totalVisits + 1}</span>
                       </p>
                     </div>
-                    <p className="font-body text-lg text-charcoal/70">
+                    <p className="font-body text-base sm:text-lg text-charcoal/70">
                       you&apos;re checked in and ready to work. make yourself at home! 🌊
                     </p>
                   </div>
                 ) : (
-                  <div className="mb-8">
-                    <p className="font-body text-xl text-charcoal/80 mb-6">
+                  <div className="mb-6 sm:mb-8 px-2">
+                    <p className="font-body text-lg sm:text-xl text-charcoal/80 mb-4 sm:mb-6">
                       welcome, <span className="font-semibold text-river-teal">{homieData.firstName} {homieData.lastName}</span>!
                     </p>
-                    <p className="font-body text-lg text-charcoal/70 mb-4">
+                    <p className="font-body text-base sm:text-lg text-charcoal/70 mb-3 sm:mb-4">
                       you&apos;re checked in and ready to start building. 
                     </p>
-                    <p className="font-body text-charcoal/70">
+                    <p className="font-body text-sm sm:text-base text-charcoal/70">
                       your profile has been created. next time you visit, just enter your name for quick check-in!
                     </p>
                   </div>
                 )}
 
-                <div className="bg-sand/20 rounded-xl p-6 mb-8 border border-eucalyptus/20">
-                  <p className="font-heading font-semibold text-lg text-deep-indigo mb-3">
+                <div className="bg-sand/20 rounded-xl p-4 sm:p-6 mb-6 sm:mb-8 border border-eucalyptus/20">
+                  <p className="font-heading font-semibold text-base sm:text-lg text-deep-indigo mb-2 sm:mb-3">
                     🌐 WiFi Access
                   </p>
-                  <p className="font-body text-charcoal/70 mb-2">
-                    Network: <span className="font-mono font-semibold text-river-teal">billabong_homies</span>
+                  <p className="font-body text-sm sm:text-base text-charcoal/70 mb-2">
+                    Network: <span className="font-mono font-semibold text-river-teal text-sm sm:text-base">billabong_homies</span>
                   </p>
-                  <p className="font-body text-charcoal/70">
-                    Password: <span className="font-mono font-semibold text-river-teal">billabong1</span>
+                  <p className="font-body text-sm sm:text-base text-charcoal/70">
+                    Password: <span className="font-mono font-semibold text-river-teal text-sm sm:text-base">billabong1</span>
                   </p>
                 </div>
 
