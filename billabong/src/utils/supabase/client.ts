@@ -1,15 +1,14 @@
 'use client';
 
 import { createBrowserClient } from '@supabase/ssr';
-import { SupabaseClient } from '@supabase/supabase-js';
 
-import type { Database } from '@/types/database/supabase/database';
+import type { Database } from '@/types/database.types';
 
-import { ProjectSupabaseClient } from './types';
+import type { ProjectSupabaseClient } from '@/types/index';
 
-export const createClient = () => {
-  return createBrowserClient(
+export const createClient = (): ProjectSupabaseClient => {
+  return createBrowserClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  ) as unknown as ProjectSupabaseClient;
+  );
 };

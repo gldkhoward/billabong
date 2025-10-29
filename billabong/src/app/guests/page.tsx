@@ -1,649 +1,350 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { GuestDialog } from './GuestDialog';
+import { KayakAnimation } from '../components/KayakAnimation';
 
-type OnboardingStep = 
-  | 'welcome' 
-  | 'returning-check' 
-  | 'rules' 
-  | 'personal-info' 
-  | 'profile-questions' 
-  | 'complete';
+interface Guest {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string | null;
+  github_url: string | null;
+  linkedin_url: string | null;
+  instagram_url: string | null;
+  x_handle: string | null;
+  website_url: string | null;
+  homie_image_url: string | null;
+  where_from: string | null;
+  why_billabong: string | null;
+  working_on: string | null;
+  how_to_help: string | null;
+  is_active: boolean;
+  checkin_at: string | null;
+}
 
-interface GuestData {
-  name: string;
-  github: string;
-  linkedin: string;
-  instagram: string;
-  website: string;
-  childhoodDream: string;
-  whyBillabong: string;
-  whereFrom: string;
-  workingOn: string;
-  howToHelp: string;
-  agreedToRules: boolean;
+// Generate random positions for active orbs
+const generateOrbPositions = (count: number) => {
+  const positions = [];
+  const usedPositions: { x: number; y: number }[] = [];
+  
+  for (let i = 0; i < count; i++) {
+    let position;
+    let attempts = 0;
+    
+    do {
+      const x = 10 + Math.random() * 80;
+      const y = 10 + Math.random() * 80;
+      position = { x, y };
+      attempts++;
+      
+      const isTooClose = usedPositions.some(used => {
+        const distance = Math.sqrt(Math.pow(used.x - x, 2) + Math.pow(used.y - y, 2));
+        return distance < 15;
+      });
+      
+      if (!isTooClose || attempts > 50) {
+        usedPositions.push(position);
+        break;
+      }
+    } while (attempts < 50);
+    
+    positions.push(position);
+  }
+  
+  return positions;
+};
+
+// DVD Bouncing Orb Component
+function BouncingOrb({ guest, containerRef, onClick }: { guest: Guest; containerRef: React.RefObject<HTMLDivElement | null>; onClick: () => void }) {
+  const orbRef = useRef<HTMLButtonElement>(null);
+  const [position, setPosition] = useState(() => ({ 
+    x: Math.random() * 80 + 10, 
+    y: Math.random() * 80 + 10 
+  }));
+  const [velocity, setVelocity] = useState(() => ({ 
+    x: (Math.random() - 0.5) * 0.5, 
+    y: (Math.random() - 0.5) * 0.5 
+  }));
+
+  useEffect(() => {
+    if (!containerRef.current || !orbRef.current) return;
+
+    const animate = () => {
+      if (!containerRef.current || !orbRef.current) return;
+
+      const containerWidth = containerRef.current.offsetWidth;
+      const containerHeight = containerRef.current.offsetHeight;
+      const orbWidth = orbRef.current.offsetWidth;
+      const orbHeight = orbRef.current.offsetHeight;
+
+      setPosition(prev => {
+        let newX = prev.x + velocity.x;
+        let newY = prev.y + velocity.y;
+        let newVelX = velocity.x;
+        let newVelY = velocity.y;
+
+        // Convert percentage to pixels for bounce detection
+        const xPx = (newX / 100) * containerWidth;
+        const yPx = (newY / 100) * containerHeight;
+
+        // Bounce off walls
+        if (xPx <= 0 || xPx + orbWidth >= containerWidth) {
+          newVelX = -newVelX;
+          newX = xPx <= 0 ? 0 : ((containerWidth - orbWidth) / containerWidth) * 100;
+        }
+        if (yPx <= 0 || yPx + orbHeight >= containerHeight) {
+          newVelY = -newVelY;
+          newY = yPx <= 0 ? 0 : ((containerHeight - orbHeight) / containerHeight) * 100;
+        }
+
+        if (newVelX !== velocity.x || newVelY !== velocity.y) {
+          setVelocity({ x: newVelX, y: newVelY });
+        }
+
+        return { x: newX, y: newY };
+      });
+    };
+
+    const intervalId = setInterval(animate, 16); // ~60fps
+    return () => clearInterval(intervalId);
+  }, [velocity, containerRef]);
+
+  return (
+    <button
+      ref={orbRef}
+      onClick={onClick}
+      className="absolute group cursor-pointer transition-transform hover:scale-110"
+      style={{
+        left: `${position.x}%`,
+        top: `${position.y}%`,
+      }}
+    >
+      <div className="relative bg-linear-to-br from-charcoal/30 to-charcoal/40 rounded-full shadow-md w-14 h-14 sm:w-16 sm:h-16 opacity-60 hover:opacity-80 transition-opacity overflow-hidden">
+        {guest.homie_image_url ? (
+          <img 
+            src={guest.homie_image_url} 
+            alt={`${guest.first_name} ${guest.last_name}`}
+            className="w-full h-full object-cover grayscale"
+          />
+        ) : (
+          <div className="relative w-full h-full flex items-center justify-center text-charcoal/60 font-heading font-bold text-lg sm:text-xl z-10">
+            {guest.first_name[0]}{guest.last_name[0]}
+          </div>
+        )}
+      </div>
+      <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-1.5 bg-white/95 backdrop-blur-sm rounded-lg shadow-md font-heading font-semibold text-xs text-charcoal/70 opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none">
+        {guest.first_name} {guest.last_name}
+      </div>
+    </button>
+  );
 }
 
 export default function GuestsPage() {
-  const [step, setStep] = useState<OnboardingStep>('welcome');
-  const [isReturning, setIsReturning] = useState(false);
-  const [searchName, setSearchName] = useState('');
-  const [guestData, setGuestData] = useState<GuestData>({
-    name: '',
-    github: '',
-    linkedin: '',
-    instagram: '',
-    website: '',
-    childhoodDream: '',
-    whyBillabong: '',
-    whereFrom: '',
-    workingOn: '',
-    howToHelp: '',
-    agreedToRules: false,
-  });
+  const [guests, setGuests] = useState<Guest[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedGuest, setSelectedGuest] = useState<Guest | null>(null);
+  const [orbPositions, setOrbPositions] = useState<{ x: number; y: number }[]>([]);
+  const bottomContainerRef = useRef<HTMLDivElement>(null);
 
-  // Mock returning user data (would come from database)
-  const mockReturningUser = {
-    name: 'Alex Chen',
-    visitCount: 3,
-    lastVisit: '2 weeks ago',
-  };
+  const activeGuests = guests.filter(g => g.is_active);
+  const inactiveGuests = guests.filter(g => !g.is_active);
 
-  const handleReturningCheckIn = () => {
-    // This would check the database in real implementation
-    if (searchName.toLowerCase().includes('alex')) {
-      setIsReturning(true);
-      setStep('complete');
-    } else {
-      // Not found, proceed with new onboarding
-      setGuestData({ ...guestData, name: searchName });
-      setStep('rules');
+  useEffect(() => {
+    fetchGuests();
+  }, []);
+
+  useEffect(() => {
+    if (activeGuests.length > 0) {
+      setOrbPositions(generateOrbPositions(activeGuests.length));
+    }
+  }, [activeGuests.length]);
+
+  const fetchGuests = async () => {
+    try {
+      const response = await fetch('/api/guests/active');
+      if (response.ok) {
+        const data = await response.json();
+        setGuests(data);
+      }
+    } catch (error) {
+      console.error('Error fetching guests:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const updateGuestData = (field: keyof GuestData, value: string | boolean) => {
-    setGuestData({ ...guestData, [field]: value });
-  };
-
-  const canProceedFromPersonalInfo = () => {
-    return guestData.name.trim().length > 0;
-  };
-
-  const canProceedFromProfile = () => {
-    return (
-      guestData.whyBillabong.trim().length > 0 &&
-      guestData.workingOn.trim().length > 0
-    );
-  };
-
-  // Progress indicator
-  const getProgress = () => {
-    const steps: OnboardingStep[] = ['welcome', 'rules', 'personal-info', 'profile-questions', 'complete'];
-    const currentIndex = steps.indexOf(step);
-    return ((currentIndex + 1) / steps.length) * 100;
-  };
+  const orbColors = [
+    'from-river-teal to-deep-indigo',
+    'from-eucalyptus to-river-teal',
+    'from-sand to-eucalyptus',
+    'from-deep-indigo to-river-teal',
+    'from-river-teal to-eucalyptus',
+  ];
 
   return (
-    <div className="water-dots min-h-screen">
+    <div className="water-dots h-screen flex flex-col overflow-hidden">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-[#F7F8F5]/90 backdrop-blur-sm border-b border-[#1F7A8C]/10">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav className="sticky top-0 z-50 bg-foam/90 backdrop-blur-sm border-b border-river-teal/10 shrink-0">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link href="/" className="font-heading font-bold text-xl text-[#0D1B2A]">
+            <Link href="/" className="font-heading font-bold text-xl text-deep-indigo">
               billabong
             </Link>
-            <Link 
-              href="/"
-              className="text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C] transition-colors"
-            >
-              ← back
-            </Link>
+            <div className="flex items-center gap-4">
+              <Link 
+                href="/guests/landing"
+                className="px-4 py-2 bg-river-teal text-white rounded-lg font-heading font-semibold hover:bg-deep-indigo transition-all text-sm"
+              >
+                Check In
+              </Link>
+              <Link 
+                href="/"
+                className="text-sm font-medium text-charcoal hover:text-river-teal transition-colors"
+              >
+                ← back
+              </Link>
+            </div>
           </div>
         </div>
       </nav>
 
-      {/* Progress Bar */}
-      {step !== 'welcome' && step !== 'complete' && (
-        <div className="sticky top-16 z-40 bg-[#F7F8F5]/90 backdrop-blur-sm">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="w-full bg-[#1F7A8C]/20 rounded-full h-2">
-              <div 
-                className="bg-[#1F7A8C] h-2 rounded-full transition-all duration-500 ease-out"
-                style={{ width: `${getProgress()}%` }}
-              />
+      {/* Split Content */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Top Half - Active Guests */}
+        <div className="h-1/2 relative border-b-2 border-river-teal/20 bg-foam/30">
+          {/* Background Animation */}
+          <div className="absolute inset-0 pointer-events-none opacity-10">
+            <KayakAnimation />
+          </div>
+
+          <div className="relative z-10 h-full flex flex-col">
+            {/* Header */}
+            <div className="text-center py-6 px-4">
+              <h2 className="font-heading font-bold text-2xl sm:text-3xl text-deep-indigo mb-2">
+                currently here 🌊
+              </h2>
+              <p className="font-body text-sm text-charcoal/80">
+                {loading ? 'loading...' : activeGuests.length === 0 ? 'no one is here right now' : `${activeGuests.length} ${activeGuests.length === 1 ? 'person' : 'people'} here now`}
+              </p>
             </div>
+
+            {/* Floating Active Orbs */}
+            {!loading && activeGuests.length > 0 && (
+              <div className="flex-1 relative">
+                {activeGuests.map((guest, index) => {
+                  const position = orbPositions[index] || { x: 50, y: 50 };
+                  const colorClass = orbColors[index % orbColors.length];
+                  const delay = index * 0.1;
+                  
+                  return (
+                    <button
+                      key={guest.id}
+                      onClick={() => setSelectedGuest(guest)}
+                      className="absolute transform -translate-x-1/2 -translate-y-1/2 group cursor-pointer"
+                      style={{
+                        left: `${position.x}%`,
+                        top: `${position.y}%`,
+                        animation: `float-${index % 3} ${3 + (index % 3)}s ease-in-out infinite`,
+                        animationDelay: `${delay}s`,
+                      }}
+                    >
+                      <div className={`relative bg-linear-to-br ${colorClass} rounded-full shadow-lg transition-all duration-300 ease-out group-hover:scale-125 group-hover:shadow-2xl w-16 h-16 sm:w-20 sm:h-20 overflow-hidden`}>
+                        <div className={`absolute inset-0 rounded-full bg-linear-to-br ${colorClass} opacity-50 animate-ping-slow group-hover:animate-none`} />
+                        {guest.homie_image_url ? (
+                          <img 
+                            src={guest.homie_image_url} 
+                            alt={`${guest.first_name} ${guest.last_name}`}
+                            className="relative w-full h-full object-cover z-10"
+                          />
+                        ) : (
+                          <div className="relative w-full h-full flex items-center justify-center text-white font-heading font-bold text-xl sm:text-2xl z-10">
+                            {guest.first_name[0]}{guest.last_name[0]}
+                          </div>
+                        )}
+                      </div>
+                      <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-1.5 bg-white/95 backdrop-blur-sm rounded-lg shadow-md font-heading font-semibold text-sm text-deep-indigo opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none">
+                        {guest.first_name} {guest.last_name}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {activeGuests.length === 0 && !loading && (
+              <div className="flex-1 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="text-5xl mb-4">🏖️</div>
+                  <p className="font-body text-charcoal/60">The space is quiet right now</p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-      )}
 
-      <main className="py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
-          
-          {/* Welcome Step */}
-          {step === 'welcome' && (
-            <div className="text-center animate-fade-in">
-              <div className="mb-8">
-                <Image 
-                  src="/arrayh_logo.jpg" 
-                  alt="Billabong House" 
-                  width={100} 
-                  height={100}
-                  className="mx-auto rounded-2xl shadow-xl"
-                />
-              </div>
-              <h1 className="font-heading font-bold text-4xl sm:text-5xl lg:text-6xl text-[#0D1B2A] mb-6">
-                welcome to billabong 🌊
-              </h1>
-              <p className="font-body text-lg sm:text-xl text-[#1A1A1A]/80 mb-12 max-w-2xl mx-auto leading-relaxed">
-                we&apos;re excited to have you here. let&apos;s get you set up and checked in.
+        {/* Bottom Half - Inactive Guests (DVD Bounce) */}
+        <div className="h-1/2 relative bg-charcoal/5">
+          <div className="relative z-10 h-full flex flex-col">
+            {/* Header */}
+            <div className="text-center py-6 px-4">
+              <h2 className="font-heading font-bold text-2xl sm:text-3xl text-charcoal/70 mb-2">
+                past guests 👋
+              </h2>
+              <p className="font-body text-sm text-charcoal/60">
+                {loading ? 'loading...' : inactiveGuests.length === 0 ? 'no past guests yet' : `${inactiveGuests.length} ${inactiveGuests.length === 1 ? 'person has' : 'people have'} visited before`}
               </p>
-
-              <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
-                <button
-                  onClick={() => setStep('returning-check')}
-                  className="group bg-white rounded-2xl p-8 border-2 border-[#1F7A8C] hover:border-[#0D1B2A] transition-all hover:shadow-xl"
-                >
-                  <div className="text-4xl mb-4">👋</div>
-                  <h2 className="font-heading font-semibold text-2xl text-[#0D1B2A] mb-3">
-                    returning guest
-                  </h2>
-                  <p className="font-body text-[#1A1A1A]/70">
-                    quick check-in if you&apos;ve been here before
-                  </p>
-                </button>
-
-                <button
-                  onClick={() => setStep('rules')}
-                  className="group bg-white rounded-2xl p-8 border-2 border-[#6C8C64] hover:border-[#0D1B2A] transition-all hover:shadow-xl"
-                >
-                  <div className="text-4xl mb-4">✨</div>
-                  <h2 className="font-heading font-semibold text-2xl text-[#0D1B2A] mb-3">
-                    first time here
-                  </h2>
-                  <p className="font-body text-[#1A1A1A]/70">
-                    let&apos;s get you onboarded
-                  </p>
-                </button>
-              </div>
             </div>
-          )}
 
-          {/* Returning Guest Check */}
-          {step === 'returning-check' && (
-            <div className="animate-fade-in">
-              <div className="text-center mb-12">
-                <h1 className="font-heading font-bold text-4xl sm:text-5xl text-[#0D1B2A] mb-4">
-                  welcome back!
-                </h1>
-                <p className="font-body text-lg text-[#1A1A1A]/80">
-                  enter your name to check in
-                </p>
+            {/* Bouncing Inactive Orbs */}
+            {!loading && inactiveGuests.length > 0 && (
+              <div ref={bottomContainerRef} className="flex-1 relative overflow-hidden">
+                {inactiveGuests.map((guest) => (
+                  <BouncingOrb
+                    key={guest.id}
+                    guest={guest}
+                    containerRef={bottomContainerRef}
+                    onClick={() => setSelectedGuest(guest)}
+                  />
+                ))}
               </div>
-
-              <div className="bg-white rounded-2xl p-8 sm:p-12 shadow-xl max-w-2xl mx-auto">
-                <label className="block font-heading font-semibold text-lg text-[#0D1B2A] mb-4">
-                  What&apos;s your name?
-                </label>
-                <input
-                  type="text"
-                  value={searchName}
-                  onChange={(e) => setSearchName(e.target.value)}
-                  placeholder="Enter your first and last name"
-                  className="w-full px-6 py-4 border-2 border-[#1F7A8C]/30 rounded-xl font-body text-lg focus:border-[#1F7A8C] focus:outline-none transition-all mb-6"
-                  onKeyPress={(e) => e.key === 'Enter' && searchName.trim() && handleReturningCheckIn()}
-                />
-
-                <div className="flex gap-4">
-                  <button
-                    onClick={() => setStep('welcome')}
-                    className="flex-1 px-6 py-4 border-2 border-[#1F7A8C] text-[#1F7A8C] rounded-xl font-heading font-semibold hover:bg-[#1F7A8C] hover:text-white transition-all"
-                  >
-                    Back
-                  </button>
-                  <button
-                    onClick={handleReturningCheckIn}
-                    disabled={!searchName.trim()}
-                    className="flex-1 px-6 py-4 bg-[#1F7A8C] text-white rounded-xl font-heading font-semibold hover:bg-[#0D1B2A] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Check In
-                  </button>
-                </div>
-
-                <button
-                  onClick={() => setStep('rules')}
-                  className="w-full mt-6 text-sm text-[#1A1A1A]/60 hover:text-[#1F7A8C] transition-colors"
-                >
-                  First time? Start onboarding →
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* House Rules Step */}
-          {step === 'rules' && (
-            <div className="animate-fade-in">
-              <div className="text-center mb-12">
-                <h1 className="font-heading font-bold text-4xl sm:text-5xl text-[#0D1B2A] mb-4">
-                  house guidelines
-                </h1>
-                <p className="font-body text-lg text-[#1A1A1A]/80">
-                  a few simple principles to help everyone thrive
-                </p>
-              </div>
-
-              <div className="bg-white rounded-2xl p-8 sm:p-12 shadow-xl mb-8">
-                <div className="space-y-6 mb-8">
-                  {[
-                    {
-                      icon: '🤝',
-                      title: 'respect the space',
-                      description: 'clean up after yourself. this is everyone&apos;s home.'
-                    },
-                    {
-                      icon: '🏠',
-                      title: 'residents first',
-                      description: 'be mindful that this is a home first, coworking space second.'
-                    },
-                    {
-                      icon: '🎧',
-                      title: 'respect focus',
-                      description: 'headphones mean do not disturb. respect the flow state.'
-                    },
-                    {
-                      icon: '🤫',
-                      title: 'quiet coworking',
-                      description: 'keep noise minimal in work areas. take calls outside.'
-                    },
-                    {
-                      icon: '🔒',
-                      title: 'resident zones',
-                      description: 'upper levels are for residents only unless invited.'
-                    },
-                    {
-                      icon: '🍳',
-                      title: 'kitchen access',
-                      description: 'ask before using kitchen. clean up thoroughly after.'
-                    },
-                  ].map((rule, idx) => (
-                    <div key={idx} className="flex gap-4 items-start">
-                      <div className="text-3xl flex-shrink-0">{rule.icon}</div>
-                      <div>
-                        <h3 className="font-heading font-semibold text-lg text-[#0D1B2A] mb-1">
-                          {rule.title}
-                        </h3>
-                        <p className="font-body text-[#1A1A1A]/70">
-                          {rule.description}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="border-t border-[#1F7A8C]/10 pt-6">
-                  <label className="flex items-start gap-3 cursor-pointer group">
-                    <input
-                      type="checkbox"
-                      checked={guestData.agreedToRules}
-                      onChange={(e) => updateGuestData('agreedToRules', e.target.checked)}
-                      className="mt-1 w-5 h-5 rounded border-2 border-[#1F7A8C] text-[#1F7A8C] focus:ring-[#1F7A8C] cursor-pointer"
-                    />
-                    <span className="font-body text-[#1A1A1A] group-hover:text-[#1F7A8C] transition-colors">
-                      I understand and agree to follow these guidelines during my visit
-                    </span>
-                  </label>
-                </div>
-              </div>
-
-              <div className="flex gap-4">
-                <button
-                  onClick={() => setStep('welcome')}
-                  className="flex-1 px-6 py-4 border-2 border-[#1F7A8C] text-[#1F7A8C] rounded-xl font-heading font-semibold hover:bg-[#1F7A8C] hover:text-white transition-all"
-                >
-                  Back
-                </button>
-                <button
-                  onClick={() => setStep('personal-info')}
-                  disabled={!guestData.agreedToRules}
-                  className="flex-1 px-6 py-4 bg-[#1F7A8C] text-white rounded-xl font-heading font-semibold hover:bg-[#0D1B2A] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Continue
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Personal Info Step */}
-          {step === 'personal-info' && (
-            <div className="animate-fade-in">
-              <div className="text-center mb-12">
-                <h1 className="font-heading font-bold text-4xl sm:text-5xl text-[#0D1B2A] mb-4">
-                  tell us about you
-                </h1>
-                <p className="font-body text-lg text-[#1A1A1A]/80">
-                  help us and other guests connect with you
-                </p>
-              </div>
-
-              <div className="bg-white rounded-2xl p-8 sm:p-12 shadow-xl mb-8">
-                <div className="space-y-6">
-                  <div>
-                    <label className="block font-heading font-semibold text-lg text-[#0D1B2A] mb-2">
-                      Full Name <span className="text-[#1F7A8C]">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={guestData.name}
-                      onChange={(e) => updateGuestData('name', e.target.value)}
-                      placeholder="Your name"
-                      className="w-full px-4 py-3 border-2 border-[#1F7A8C]/30 rounded-xl font-body focus:border-[#1F7A8C] focus:outline-none transition-all"
-                    />
-                  </div>
-
-                  <div className="grid sm:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block font-heading font-semibold text-[#0D1B2A] mb-2">
-                        GitHub
-                      </label>
-                      <div className="relative">
-                        <span className="absolute left-4 top-3 text-[#1A1A1A]/40">github.com/</span>
-                        <input
-                          type="text"
-                          value={guestData.github}
-                          onChange={(e) => updateGuestData('github', e.target.value)}
-                          placeholder="username"
-                          className="w-full pl-28 pr-4 py-3 border-2 border-[#1F7A8C]/30 rounded-xl font-body focus:border-[#1F7A8C] focus:outline-none transition-all"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block font-heading font-semibold text-[#0D1B2A] mb-2">
-                        LinkedIn
-                      </label>
-                      <div className="relative">
-                        <span className="absolute left-4 top-3 text-[#1A1A1A]/40">linkedin.com/in/</span>
-                        <input
-                          type="text"
-                          value={guestData.linkedin}
-                          onChange={(e) => updateGuestData('linkedin', e.target.value)}
-                          placeholder="username"
-                          className="w-full pl-36 pr-4 py-3 border-2 border-[#1F7A8C]/30 rounded-xl font-body focus:border-[#1F7A8C] focus:outline-none transition-all"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block font-heading font-semibold text-[#0D1B2A] mb-2">
-                        Instagram
-                      </label>
-                      <div className="relative">
-                        <span className="absolute left-4 top-3 text-[#1A1A1A]/40">@</span>
-                        <input
-                          type="text"
-                          value={guestData.instagram}
-                          onChange={(e) => updateGuestData('instagram', e.target.value)}
-                          placeholder="username"
-                          className="w-full pl-10 pr-4 py-3 border-2 border-[#1F7A8C]/30 rounded-xl font-body focus:border-[#1F7A8C] focus:outline-none transition-all"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block font-heading font-semibold text-[#0D1B2A] mb-2">
-                        Website
-                      </label>
-                      <input
-                        type="url"
-                        value={guestData.website}
-                        onChange={(e) => updateGuestData('website', e.target.value)}
-                        placeholder="https://yoursite.com"
-                        className="w-full px-4 py-3 border-2 border-[#1F7A8C]/30 rounded-xl font-body focus:border-[#1F7A8C] focus:outline-none transition-all"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex gap-4">
-                <button
-                  onClick={() => setStep('rules')}
-                  className="flex-1 px-6 py-4 border-2 border-[#1F7A8C] text-[#1F7A8C] rounded-xl font-heading font-semibold hover:bg-[#1F7A8C] hover:text-white transition-all"
-                >
-                  Back
-                </button>
-                <button
-                  onClick={() => setStep('profile-questions')}
-                  disabled={!canProceedFromPersonalInfo()}
-                  className="flex-1 px-6 py-4 bg-[#1F7A8C] text-white rounded-xl font-heading font-semibold hover:bg-[#0D1B2A] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Continue
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Profile Questions Step */}
-          {step === 'profile-questions' && (
-            <div className="animate-fade-in">
-              <div className="text-center mb-12">
-                <h1 className="font-heading font-bold text-4xl sm:text-5xl text-[#0D1B2A] mb-4">
-                  your story
-                </h1>
-                <p className="font-body text-lg text-[#1A1A1A]/80">
-                  help the community get to know you better
-                </p>
-              </div>
-
-              <div className="bg-white rounded-2xl p-8 sm:p-12 shadow-xl mb-8">
-                <div className="space-y-8">
-                  <div>
-                    <label className="block font-heading font-semibold text-lg text-[#0D1B2A] mb-2">
-                      What did you want to be when you grew up?
-                    </label>
-                    <input
-                      type="text"
-                      value={guestData.childhoodDream}
-                      onChange={(e) => updateGuestData('childhoodDream', e.target.value)}
-                      placeholder="An astronaut, artist, inventor..."
-                      className="w-full px-4 py-3 border-2 border-[#1F7A8C]/30 rounded-xl font-body focus:border-[#1F7A8C] focus:outline-none transition-all"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block font-heading font-semibold text-lg text-[#0D1B2A] mb-2">
-                      Where are you from?
-                    </label>
-                    <input
-                      type="text"
-                      value={guestData.whereFrom}
-                      onChange={(e) => updateGuestData('whereFrom', e.target.value)}
-                      placeholder="City, country, or wherever you call home"
-                      className="w-full px-4 py-3 border-2 border-[#1F7A8C]/30 rounded-xl font-body focus:border-[#1F7A8C] focus:outline-none transition-all"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block font-heading font-semibold text-lg text-[#0D1B2A] mb-2">
-                      Why did you come to Billabong? <span className="text-[#1F7A8C]">*</span>
-                    </label>
-                    <textarea
-                      value={guestData.whyBillabong}
-                      onChange={(e) => updateGuestData('whyBillabong', e.target.value)}
-                      placeholder="What brought you here today?"
-                      rows={3}
-                      className="w-full px-4 py-3 border-2 border-[#1F7A8C]/30 rounded-xl font-body focus:border-[#1F7A8C] focus:outline-none transition-all resize-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block font-heading font-semibold text-lg text-[#0D1B2A] mb-2">
-                      What are you working on? <span className="text-[#1F7A8C]">*</span>
-                    </label>
-                    <textarea
-                      value={guestData.workingOn}
-                      onChange={(e) => updateGuestData('workingOn', e.target.value)}
-                      placeholder="Your current project, research, or creative work"
-                      rows={3}
-                      className="w-full px-4 py-3 border-2 border-[#1F7A8C]/30 rounded-xl font-body focus:border-[#1F7A8C] focus:outline-none transition-all resize-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block font-heading font-semibold text-lg text-[#0D1B2A] mb-2">
-                      How can others help?
-                    </label>
-                    <textarea
-                      value={guestData.howToHelp}
-                      onChange={(e) => updateGuestData('howToHelp', e.target.value)}
-                      placeholder="Intros, feedback, collaboration opportunities..."
-                      rows={3}
-                      className="w-full px-4 py-3 border-2 border-[#1F7A8C]/30 rounded-xl font-body focus:border-[#1F7A8C] focus:outline-none transition-all resize-none"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex gap-4">
-                <button
-                  onClick={() => setStep('personal-info')}
-                  className="flex-1 px-6 py-4 border-2 border-[#1F7A8C] text-[#1F7A8C] rounded-xl font-heading font-semibold hover:bg-[#1F7A8C] hover:text-white transition-all"
-                >
-                  Back
-                </button>
-                <button
-                  onClick={() => setStep('complete')}
-                  disabled={!canProceedFromProfile()}
-                  className="flex-1 px-6 py-4 bg-[#1F7A8C] text-white rounded-xl font-heading font-semibold hover:bg-[#0D1B2A] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Complete Check-In
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Complete Step */}
-          {step === 'complete' && (
-            <div className="animate-fade-in text-center">
-              <div className="bg-white rounded-2xl p-8 sm:p-12 shadow-xl max-w-2xl mx-auto">
-                <div className="text-6xl mb-6">✅</div>
-                <h1 className="font-heading font-bold text-4xl sm:text-5xl text-[#0D1B2A] mb-4">
-                  you&apos;re all set!
-                </h1>
-                
-                {isReturning ? (
-                  <div className="mb-8">
-                    <p className="font-body text-xl text-[#1A1A1A]/80 mb-6">
-                      welcome back, <span className="font-semibold text-[#1F7A8C]">{mockReturningUser.name}</span>! 
-                    </p>
-                    <div className="bg-[#1F7A8C]/10 rounded-xl p-6 mb-6">
-                      <p className="font-body text-[#1A1A1A]/70">
-                        <span className="font-semibold">Visit #{mockReturningUser.visitCount}</span> · Last here {mockReturningUser.lastVisit}
-                      </p>
-                    </div>
-                    <p className="font-body text-lg text-[#1A1A1A]/70">
-                      you&apos;re checked in and ready to work. make yourself at home! 🌊
-                    </p>
-                  </div>
-                ) : (
-                  <div className="mb-8">
-                    <p className="font-body text-xl text-[#1A1A1A]/80 mb-6">
-                      welcome, <span className="font-semibold text-[#1F7A8C]">{guestData.name}</span>!
-                    </p>
-                    <p className="font-body text-lg text-[#1A1A1A]/70 mb-4">
-                      you&apos;re checked in and ready to start building. 
-                    </p>
-                    <p className="font-body text-[#1A1A1A]/70">
-                      your profile has been created. next time you visit, just enter your name for quick check-in!
-                    </p>
-                  </div>
-                )}
-
-                <div className="bg-[#E9DCC2]/20 rounded-xl p-6 mb-8 border border-[#6C8C64]/20">
-                  <p className="font-heading font-semibold text-lg text-[#0D1B2A] mb-3">
-                    🌐 WiFi Access
-                  </p>
-                  <p className="font-body text-[#1A1A1A]/70 mb-2">
-                    Network: <span className="font-mono font-semibold text-[#1F7A8C]">billabong_homies</span>
-                  </p>
-                  <p className="font-body text-[#1A1A1A]/70">
-                    Password: <span className="font-mono font-semibold text-[#1F7A8C]">billabong1</span>
-                  </p>
-                </div>
-
-                <div className="space-y-3">
-                  <Link
-                    href="/house-rules"
-                    className="block px-6 py-3 border-2 border-[#1F7A8C] text-[#1F7A8C] rounded-xl font-heading font-semibold hover:bg-[#1F7A8C] hover:text-white transition-all"
-                  >
-                    Review House Rules
-                  </Link>
-                  <Link
-                    href="/residents"
-                    className="block px-6 py-3 border-2 border-[#1F7A8C] text-[#1F7A8C] rounded-xl font-heading font-semibold hover:bg-[#1F7A8C] hover:text-white transition-all"
-                  >
-                    Meet the Residents
-                  </Link>
-                  <Link
-                    href="/"
-                    className="block px-6 py-4 bg-[#1F7A8C] text-white rounded-xl font-heading font-semibold hover:bg-[#0D1B2A] transition-all"
-                  >
-                    Back to Home
-                  </Link>
-                </div>
-              </div>
-
-              {/* Fun Stats Section */}
-              <div className="mt-12 grid grid-cols-3 gap-4 max-w-2xl mx-auto">
-                <div className="bg-white rounded-xl p-4 shadow">
-                  <div className="text-3xl font-bold text-[#1F7A8C]">
-                    {isReturning ? mockReturningUser.visitCount : 1}
-                  </div>
-                  <div className="text-sm text-[#1A1A1A]/60 font-body">
-                    {isReturning ? 'total visits' : 'first visit!'}
-                  </div>
-                </div>
-                <div className="bg-white rounded-xl p-4 shadow">
-                  <div className="text-3xl font-bold text-[#1F7A8C]">47</div>
-                  <div className="text-sm text-[#1A1A1A]/60 font-body">guests today</div>
-                </div>
-                <div className="bg-white rounded-xl p-4 shadow">
-                  <div className="text-3xl font-bold text-[#1F7A8C]">12</div>
-                  <div className="text-sm text-[#1A1A1A]/60 font-body">here now</div>
-                </div>
-              </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </main>
+      </div>
 
-      {/* Footer */}
-      <footer className="border-t border-[#1F7A8C]/10 py-8 px-4 bg-[#F7F8F5] mt-12">
-        <div className="max-w-4xl mx-auto text-center">
-          <p className="font-body text-sm text-[#1A1A1A]/50">
-            © {new Date().getFullYear()} billabong. part of arrayah.
-          </p>
-        </div>
-      </footer>
+      {/* Guest Dialog */}
+      <GuestDialog guest={selectedGuest} onClose={() => setSelectedGuest(null)} />
 
-      <style jsx>{`
-        @keyframes fade-in {
-          from {
+      {/* Animations */}
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes float-0 {
+          0%, 100% { transform: translate(-50%, -50%) translateY(0px); }
+          50% { transform: translate(-50%, -50%) translateY(-20px); }
+        }
+        @keyframes float-1 {
+          0%, 100% { transform: translate(-50%, -50%) translateY(0px); }
+          50% { transform: translate(-50%, -50%) translateY(-15px); }
+        }
+        @keyframes float-2 {
+          0%, 100% { transform: translate(-50%, -50%) translateY(0px); }
+          50% { transform: translate(-50%, -50%) translateY(-25px); }
+        }
+        @keyframes ping-slow {
+          0% {
+            transform: scale(1);
+            opacity: 0.5;
+          }
+          75%, 100% {
+            transform: scale(1.5);
             opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
           }
         }
-
-        .animate-fade-in {
-          animation: fade-in 0.5s ease-out;
+        .animate-ping-slow {
+          animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
         }
-      `}</style>
+      `}} />
     </div>
   );
 }
-

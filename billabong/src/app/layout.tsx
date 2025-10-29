@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   description: "A waterfront residency home in Drummoyne for builders, researchers, and creators. Focus hard. Ship together. Part of the Arrayah network.",
   keywords: ["residency", "coliving", "coworking", "builder house", "Drummoyne", "Sydney", "Arrayah"],
   openGraph: {
-    title: "Billabong House — Where Momentum Gathers",
+    title: "Billabong House - Where Momentum Gathers",
     description: "A waterfront residency home in Drummoyne for builders, researchers, and creators.",
     type: "website",
     locale: "en_AU",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Billabong House — Where Momentum Gathers",
+    title: "Billabong House - Where Momentum Gathers",
     description: "A waterfront residency home in Drummoyne for builders, researchers, and creators.",
   },
 };

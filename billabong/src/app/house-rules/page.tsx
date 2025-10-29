@@ -24,7 +24,7 @@ export default function HouseRules() {
     },
     {
       title: "kitchen access",
-      description: "if you want to use the kichen, utensils or appliances, ask a resident and ensure you clean up after youself (wash your items, put them away, etc).",
+      description: "if you want to use the kichen, utensils or appliances, ask a resident and ensure you clean up after yourself (wash your items, put them away, etc).",
     },
   ];
 
