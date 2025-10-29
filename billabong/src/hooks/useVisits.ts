@@ -132,7 +132,7 @@ export function useActiveVisits() {
         const result = await getActiveVisits();
         
         if (result.success) {
-          setData(result.data);
+          setData(result.data as VisitWithHomie[]);
         } else {
           setError(result.error);
         }
