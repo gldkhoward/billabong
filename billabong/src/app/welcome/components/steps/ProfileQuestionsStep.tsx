@@ -16,6 +16,8 @@ type ProfileQuestionsStepProps = {
   error?: string | null;
 };
 
+type FieldName = keyof ProfileQuestions;
+
 export function ProfileQuestionsStep({
   onSubmit,
   onBack,
@@ -26,36 +28,34 @@ export function ProfileQuestionsStep({
     resolver: zodResolver(profileQuestionsSchema),
   });
 
-  // Refs for field navigation
-  const childhoodDreamRef = useRef<HTMLInputElement>(null);
-  const whereFromRef = useRef<HTMLInputElement>(null);
-  const whyBillabongRef = useRef<HTMLTextAreaElement>(null);
-  const workingOnRef = useRef<HTMLTextAreaElement>(null);
-  const howToHelpRef = useRef<HTMLTextAreaElement>(null);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Handle Enter key navigation
+  // Handle Enter key navigation using React Hook Form's setFocus
   // For input fields: Enter moves to next
   // For textareas: Ctrl/Cmd+Enter moves to next (Enter creates new line)
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
-    nextRef: React.RefObject<HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement | null> | null,
+    nextField?: FieldName,
     isTextarea: boolean = false
   ) => {
     if (isTextarea) {
       // For textareas, only navigate on Ctrl+Enter or Cmd+Enter
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
-        if (nextRef?.current) {
-          nextRef.current.focus();
+        if (nextField) {
+          form.setFocus(nextField);
+        } else {
+          submitButtonRef.current?.focus();
         }
       }
     } else {
       // For regular inputs, navigate on Enter
       if (e.key === 'Enter') {
         e.preventDefault();
-        if (nextRef?.current) {
-          nextRef.current.focus();
+        if (nextField) {
+          form.setFocus(nextField);
+        } else {
+          submitButtonRef.current?.focus();
         }
       }
     }
@@ -79,8 +79,7 @@ export function ProfileQuestionsStep({
             placeholder="An astronaut, artist, inventor..."
             error={form.formState.errors.childhoodDream?.message}
             {...form.register('childhoodDream')}
-            ref={childhoodDreamRef}
-            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(e, whereFromRef, false)}
+            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(e, 'whereFrom', false)}
           />
 
           <FormField
@@ -88,8 +87,7 @@ export function ProfileQuestionsStep({
             placeholder="City, country, or wherever you call home"
             error={form.formState.errors.whereFrom?.message}
             {...form.register('whereFrom')}
-            ref={whereFromRef}
-            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(e, whyBillabongRef, false)}
+            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(e, 'whyBillabong', false)}
           />
 
           <div>
@@ -101,8 +99,7 @@ export function ProfileQuestionsStep({
               rows={3}
               error={form.formState.errors.whyBillabong?.message}
               {...form.register('whyBillabong')}
-              ref={whyBillabongRef}
-              onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => handleKeyDown(e, workingOnRef, true)}
+              onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => handleKeyDown(e, 'workingOn', true)}
             />
             <p className="mt-1 text-xs text-charcoal/50 font-body">
               Press Ctrl+Enter (or Cmd+Enter) to move to next field
@@ -118,8 +115,7 @@ export function ProfileQuestionsStep({
               rows={3}
               error={form.formState.errors.workingOn?.message}
               {...form.register('workingOn')}
-              ref={workingOnRef}
-              onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => handleKeyDown(e, howToHelpRef, true)}
+              onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => handleKeyDown(e, 'howToHelp', true)}
             />
             <p className="mt-1 text-xs text-charcoal/50 font-body">
               Press Ctrl+Enter (or Cmd+Enter) to move to next field
@@ -134,12 +130,8 @@ export function ProfileQuestionsStep({
               rows={3}
               error={form.formState.errors.howToHelp?.message}
               {...form.register('howToHelp')}
-              ref={howToHelpRef}
-              onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => handleKeyDown(e, submitButtonRef, true)}
+              onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => handleKeyDown(e, undefined, true)}
             />
-            <p className="mt-1 text-xs text-charcoal/50 font-body">
-              Press Ctrl+Enter (or Cmd+Enter) to continue
-            </p>
           </div>
         </div>
 
