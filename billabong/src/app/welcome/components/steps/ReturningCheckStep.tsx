@@ -46,6 +46,20 @@ export function ReturningCheckStep({
     onBack();
   };
 
+  // Handle Enter key in search field
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && searchQuery.trim()) {
+      e.preventDefault();
+      if (filteredHomies.length > 0) {
+        // Select the first result
+        onHomieSelected(filteredHomies[0]);
+      } else {
+        // No matches - trigger "Continue as New Guest"
+        handleNotFound();
+      }
+    }
+  };
+
   return (
     <div className="animate-fade-in">
       <div className="text-center mb-8 sm:mb-12 px-2">
@@ -70,6 +84,7 @@ export function ReturningCheckStep({
               setShowDropdown(true);
             }}
             onFocus={() => setShowDropdown(true)}
+            onKeyDown={handleSearchKeyDown}
             placeholder="Start typing your name..."
             disabled={isLoading}
             className="w-full px-4 sm:px-6 py-3 sm:py-4 border-2 border-river-teal/30 rounded-xl font-body text-base sm:text-lg focus:border-river-teal focus:outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"

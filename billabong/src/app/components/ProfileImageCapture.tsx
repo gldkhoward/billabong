@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { processProfileImage, validateImageFile } from '@/utils/image';
 
 interface ProfileImageCaptureProps {
@@ -12,75 +12,145 @@ type CaptureMode = 'choose' | 'camera' | 'upload' | 'preview';
 
 export function ProfileImageCapture({ onImageCaptured, onSkip }: ProfileImageCaptureProps) {
   const [mode, setMode] = useState<CaptureMode>('choose');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
+  const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user');
   
   const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const processedBlobRef = useRef<Blob | null>(null);
 
-  // Cleanup stream on unmount
+  // Cleanup stream on unmount or mode change
+  const cleanupStream = useCallback(() => {
+    setStream((currentStream) => {
+      if (currentStream) {
+        currentStream.getTracks().forEach(track => {
+          track.stop();
+        });
+      }
+      return null;
+    });
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+  }, []);
+
   useEffect(() => {
     return () => {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-      }
+      cleanupStream();
     };
-  }, [stream]);
+  }, [cleanupStream]);
 
-  // Start camera
-  const startCamera = async () => {
+  // Setup video element when stream changes
+  useEffect(() => {
+    const setupVideo = async () => {
+      // Only setup if we have a stream, video ref, and we're in camera mode
+      setStream((currentStream) => {
+        if (currentStream && videoRef.current && mode === 'camera') {
+          console.log('Setting up video element with stream');
+          videoRef.current.srcObject = currentStream;
+          console.log('Video source set');
+          
+          // Wait for video to be ready
+          const handleLoadedMetadata = () => {
+            console.log('Video metadata loaded');
+            if (videoRef.current) {
+              videoRef.current.play()
+                .then(() => {
+                  console.log('Video playing');
+                  // Give a small delay to ensure video is fully playing
+                  setTimeout(() => {
+                    console.log('Setting video ready to true');
+                    setVideoReady(true);
+                  }, 300);
+                })
+                .catch(err => {
+                  console.error('Error playing video:', err);
+                  setError('Could not start video playback');
+                });
+            }
+          };
+
+          videoRef.current.onloadedmetadata = handleLoadedMetadata;
+          
+          // Fallback for cases where metadata is already loaded
+          if (videoRef.current.readyState >= 2) {
+            console.log('Video metadata already loaded, calling handler');
+            handleLoadedMetadata();
+          }
+        }
+        return currentStream;
+      });
+    };
+
+    setupVideo();
+  }, [mode]); // Run when mode changes
+
+  // Start camera with improved error handling
+  const startCamera = useCallback(async () => {
+    console.log('Starting camera with facingMode:', facingMode);
     try {
       setError(null);
       setVideoReady(false);
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: { 
-          facingMode: 'user',
-          width: { ideal: 1280 },
-          height: { ideal: 1280 }
-        }
-      });
       
+      // Check if getUserMedia is supported
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('Camera not supported on this device');
+      }
+
+      // Request camera with optimal settings
+      const constraints = {
+        video: { 
+          facingMode: facingMode,
+          width: { ideal: 1920, max: 1920 },
+          height: { ideal: 1920, max: 1920 },
+          aspectRatio: { ideal: 1 }
+        },
+        audio: false
+      };
+
+      console.log('Requesting camera with constraints:', constraints);
+      const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+      console.log('Camera stream obtained:', mediaStream);
+      
+      // Set stream first, then change mode - this will trigger the useEffect above
       setStream(mediaStream);
       setMode('camera');
-      
-      if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream;
-        
-        // Wait for video metadata to load
-        videoRef.current.onloadedmetadata = () => {
-          console.log('Video metadata loaded');
-          if (videoRef.current) {
-            console.log('Video dimensions:', videoRef.current.videoWidth, 'x', videoRef.current.videoHeight);
-            videoRef.current.play()
-              .then(() => {
-                console.log('Video playing');
-                setVideoReady(true);
-              })
-              .catch(err => {
-                console.error('Error playing video:', err);
-                setError('Could not play video');
-              });
-          }
-        };
-      }
     } catch (err) {
       console.error('Camera error:', err);
-      setError('Could not access camera. Please allow camera access or upload a photo instead.');
+      cleanupStream();
+      
+      // Provide helpful error messages
+      if (err instanceof Error) {
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+          setError('Camera access denied. Please allow camera access in your browser settings.');
+        } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+          setError('No camera found on this device.');
+        } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+          setError('Camera is already in use by another application.');
+        } else {
+          setError(err.message || 'Could not access camera. Please try uploading a photo instead.');
+        }
+      } else {
+        setError('Could not access camera. Please try uploading a photo instead.');
+      }
     }
-  };
+  }, [facingMode, cleanupStream]);
 
-  // Capture photo from camera
-  const capturePhoto = () => {
-    if (!videoRef.current) {
+  // Capture photo from camera with improved quality
+  const capturePhoto = useCallback(() => {
+    if (!videoRef.current || !canvasRef.current) {
       setError('Video not ready');
       return;
     }
 
     const video = videoRef.current;
+    const canvas = canvasRef.current;
     
     // Check if video has loaded
     if (video.videoWidth === 0 || video.videoHeight === 0) {
@@ -88,21 +158,27 @@ export function ProfileImageCapture({ onImageCaptured, onSkip }: ProfileImageCap
       return;
     }
 
-    const canvas = document.createElement('canvas');
+    // Set canvas dimensions to match video
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) {
       setError('Could not create canvas context');
       return;
     }
 
-    // Draw the video frame to canvas
+    // For front camera, mirror the image horizontally
+    if (facingMode === 'user') {
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
+    }
+
+    // Draw the video frame to canvas with best quality
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     
-    // Convert to data URL
-    const imageUrl = canvas.toDataURL('image/jpeg', 0.9);
+    // Convert to data URL with high quality
+    const imageUrl = canvas.toDataURL('image/jpeg', 0.95);
     
     if (!imageUrl || imageUrl === 'data:,') {
       setError('Failed to capture image. Please try again.');
@@ -114,11 +190,19 @@ export function ProfileImageCapture({ onImageCaptured, onSkip }: ProfileImageCap
     setError(null);
     
     // Stop camera stream
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-      setStream(null);
-    }
-  };
+    cleanupStream();
+  }, [facingMode, cleanupStream]);
+
+  // Switch camera facing mode (front/back)
+  const switchCamera = useCallback(() => {
+    cleanupStream();
+    setFacingMode(prev => prev === 'user' ? 'environment' : 'user');
+    setVideoReady(false);
+    // Restart camera with new facing mode
+    setTimeout(() => {
+      startCamera();
+    }, 100);
+  }, [cleanupStream, startCamera]);
 
   // Handle file upload
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -233,12 +317,40 @@ export function ProfileImageCapture({ onImageCaptured, onSkip }: ProfileImageCap
       {mode === 'camera' && (
         <div className="space-y-3 sm:space-y-4">
           <div className="relative rounded-xl sm:rounded-2xl overflow-hidden bg-charcoal aspect-square">
+            {/* Hidden canvas for capturing */}
+            <canvas ref={canvasRef} className="hidden" />
+            
+            {/* Video element */}
             <video
               ref={videoRef}
               autoPlay
               playsInline
-              className="w-full h-full object-cover"
+              muted
+              className={`w-full h-full object-cover ${facingMode === 'user' ? 'scale-x-[-1]' : ''}`}
             />
+            
+            {/* Camera switch button */}
+            {videoReady && (
+              <button
+                onClick={switchCamera}
+                className="absolute top-4 left-4 p-2 sm:p-3 bg-black/50 hover:bg-black/70 rounded-full transition-all z-10"
+                aria-label="Switch camera"
+              >
+                <svg 
+                  className="w-5 h-5 sm:w-6 sm:h-6 text-white" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth={2} 
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" 
+                  />
+                </svg>
+              </button>
+            )}
             
             {/* Square crop overlay */}
             <div className="absolute inset-0 pointer-events-none">
@@ -250,14 +362,19 @@ export function ProfileImageCapture({ onImageCaptured, onSkip }: ProfileImageCap
                 <div className="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 w-6 h-6 sm:w-8 sm:h-8 border-b-2 border-r-2 sm:border-b-4 sm:border-r-4 border-river-teal" />
               </div>
             </div>
+
+            {/* Loading overlay */}
+            {!videoReady && (
+              <div className="absolute inset-0 flex items-center justify-center bg-charcoal">
+                <div className="text-center">
+                  <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-river-teal mb-4"></div>
+                  <p className="font-body text-sm text-white">Starting camera...</p>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="text-center">
-            {!videoReady && (
-              <p className="font-body text-xs sm:text-sm text-charcoal/70 mb-2 px-2">
-                📹 Loading camera...
-              </p>
-            )}
             {videoReady && (
               <p className="font-body text-xs sm:text-sm text-river-teal font-semibold mb-2 px-2">
                 ✓ Camera ready! Position your face in the square
@@ -268,10 +385,7 @@ export function ProfileImageCapture({ onImageCaptured, onSkip }: ProfileImageCap
           <div className="flex gap-3 sm:gap-4">
             <button
               onClick={() => {
-                if (stream) {
-                  stream.getTracks().forEach(track => track.stop());
-                  setStream(null);
-                }
+                cleanupStream();
                 setVideoReady(false);
                 setMode('choose');
               }}
@@ -284,7 +398,7 @@ export function ProfileImageCapture({ onImageCaptured, onSkip }: ProfileImageCap
               disabled={!videoReady}
               className="flex-1 px-4 sm:px-6 py-3 sm:py-4 bg-river-teal text-white rounded-xl font-heading text-sm sm:text-base font-semibold hover:bg-deep-indigo transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {videoReady ? 'Capture' : 'Loading...'}
+              {videoReady ? '📸 Capture' : 'Loading...'}
             </button>
           </div>
         </div>
@@ -294,6 +408,7 @@ export function ProfileImageCapture({ onImageCaptured, onSkip }: ProfileImageCap
       {mode === 'preview' && capturedImage && (
         <div className="space-y-3 sm:space-y-4">
           <div className="relative rounded-xl sm:rounded-2xl overflow-hidden bg-charcoal aspect-square">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={capturedImage}
               alt="Preview"

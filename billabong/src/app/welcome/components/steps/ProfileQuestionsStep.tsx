@@ -2,6 +2,7 @@
  * Profile questions step - collect deeper profile information
  */
 
+import { useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { profileQuestionsSchema, type ProfileQuestions } from '@/schemas/homie-schema';
@@ -25,6 +26,41 @@ export function ProfileQuestionsStep({
     resolver: zodResolver(profileQuestionsSchema),
   });
 
+  // Refs for field navigation
+  const childhoodDreamRef = useRef<HTMLInputElement>(null);
+  const whereFromRef = useRef<HTMLInputElement>(null);
+  const whyBillabongRef = useRef<HTMLTextAreaElement>(null);
+  const workingOnRef = useRef<HTMLTextAreaElement>(null);
+  const howToHelpRef = useRef<HTMLTextAreaElement>(null);
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Handle Enter key navigation
+  // For input fields: Enter moves to next
+  // For textareas: Ctrl/Cmd+Enter moves to next (Enter creates new line)
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
+    nextRef: React.RefObject<HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement | null> | null,
+    isTextarea: boolean = false
+  ) => {
+    if (isTextarea) {
+      // For textareas, only navigate on Ctrl+Enter or Cmd+Enter
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        if (nextRef?.current) {
+          nextRef.current.focus();
+        }
+      }
+    } else {
+      // For regular inputs, navigate on Enter
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (nextRef?.current) {
+          nextRef.current.focus();
+        }
+      }
+    }
+  };
+
   return (
     <div className="animate-fade-in pb-4">
       <div className="text-center mb-8 sm:mb-12 px-2">
@@ -43,6 +79,8 @@ export function ProfileQuestionsStep({
             placeholder="An astronaut, artist, inventor..."
             error={form.formState.errors.childhoodDream?.message}
             {...form.register('childhoodDream')}
+            ref={childhoodDreamRef}
+            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(e, whereFromRef, false)}
           />
 
           <FormField
@@ -50,36 +88,59 @@ export function ProfileQuestionsStep({
             placeholder="City, country, or wherever you call home"
             error={form.formState.errors.whereFrom?.message}
             {...form.register('whereFrom')}
+            ref={whereFromRef}
+            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(e, whyBillabongRef, false)}
           />
 
-          <FormField
-            label="Why did you come to Billabong?"
-            type="textarea"
-            required
-            placeholder="What brought you here today?"
-            rows={3}
-            error={form.formState.errors.whyBillabong?.message}
-            {...form.register('whyBillabong')}
-          />
+          <div>
+            <FormField
+              label="Why did you come to Billabong?"
+              type="textarea"
+              required
+              placeholder="What brought you here today?"
+              rows={3}
+              error={form.formState.errors.whyBillabong?.message}
+              {...form.register('whyBillabong')}
+              ref={whyBillabongRef}
+              onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => handleKeyDown(e, workingOnRef, true)}
+            />
+            <p className="mt-1 text-xs text-charcoal/50 font-body">
+              Press Ctrl+Enter (or Cmd+Enter) to move to next field
+            </p>
+          </div>
 
-          <FormField
-            label="What are you working on?"
-            type="textarea"
-            required
-            placeholder="Your current project, research, or creative work"
-            rows={3}
-            error={form.formState.errors.workingOn?.message}
-            {...form.register('workingOn')}
-          />
+          <div>
+            <FormField
+              label="What are you working on?"
+              type="textarea"
+              required
+              placeholder="Your current project, research, or creative work"
+              rows={3}
+              error={form.formState.errors.workingOn?.message}
+              {...form.register('workingOn')}
+              ref={workingOnRef}
+              onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => handleKeyDown(e, howToHelpRef, true)}
+            />
+            <p className="mt-1 text-xs text-charcoal/50 font-body">
+              Press Ctrl+Enter (or Cmd+Enter) to move to next field
+            </p>
+          </div>
 
-          <FormField
-            label="How can others help?"
-            type="textarea"
-            placeholder="Intros, feedback, collaboration opportunities..."
-            rows={3}
-            error={form.formState.errors.howToHelp?.message}
-            {...form.register('howToHelp')}
-          />
+          <div>
+            <FormField
+              label="How can others help?"
+              type="textarea"
+              placeholder="Intros, feedback, collaboration opportunities..."
+              rows={3}
+              error={form.formState.errors.howToHelp?.message}
+              {...form.register('howToHelp')}
+              ref={howToHelpRef}
+              onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => handleKeyDown(e, submitButtonRef, true)}
+            />
+            <p className="mt-1 text-xs text-charcoal/50 font-body">
+              Press Ctrl+Enter (or Cmd+Enter) to continue
+            </p>
+          </div>
         </div>
 
         {error && (
@@ -96,6 +157,7 @@ export function ProfileQuestionsStep({
         />
 
         <button
+          ref={submitButtonRef}
           type="submit"
           disabled={loading}
           className="w-full mt-3 sm:mt-4 px-4 sm:px-6 py-3 sm:py-4 bg-river-teal text-white rounded-xl font-heading text-sm sm:text-base font-semibold hover:bg-deep-indigo transition-all disabled:opacity-50 disabled:cursor-not-allowed"

@@ -2,6 +2,7 @@
  * Personal info step - collect basic information and social links
  */
 
+import { useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { personalInfoSchema, type PersonalInfo } from '@/schemas/homie-schema';
@@ -14,11 +15,28 @@ type PersonalInfoStepProps = {
   onBack: () => void;
 };
 
+type FieldName = keyof PersonalInfo;
+
 export function PersonalInfoStep({ defaultValues, onSubmit, onBack }: PersonalInfoStepProps) {
   const form = useForm<PersonalInfo>({
     resolver: zodResolver(personalInfoSchema),
     defaultValues,
   });
+
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Handle Enter key navigation using React Hook Form's setFocus
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, nextField?: FieldName) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (nextField) {
+        form.setFocus(nextField);
+      } else {
+        // Focus submit button if no next field
+        submitButtonRef.current?.focus();
+      }
+    }
+  };
 
   return (
     <div className="animate-fade-in pb-4">
@@ -41,6 +59,7 @@ export function PersonalInfoStep({ defaultValues, onSubmit, onBack }: PersonalIn
               placeholder="Your first name"
               error={form.formState.errors.firstName?.message}
               {...form.register('firstName')}
+              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(e, 'lastName')}
             />
             <FormField
               label="Last Name"
@@ -48,6 +67,7 @@ export function PersonalInfoStep({ defaultValues, onSubmit, onBack }: PersonalIn
               placeholder="Your last name"
               error={form.formState.errors.lastName?.message}
               {...form.register('lastName')}
+              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(e, 'email')}
             />
           </div>
 
@@ -57,6 +77,7 @@ export function PersonalInfoStep({ defaultValues, onSubmit, onBack }: PersonalIn
             placeholder="your.email@example.com"
             error={form.formState.errors.email?.message}
             {...form.register('email')}
+            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(e, 'github')}
           />
 
           {/* Social Links */}
@@ -70,6 +91,7 @@ export function PersonalInfoStep({ defaultValues, onSubmit, onBack }: PersonalIn
                 placeholder="username"
                 error={form.formState.errors.github?.message}
                 {...form.register('github')}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(e, 'linkedin')}
               />
 
               <FormField
@@ -77,6 +99,7 @@ export function PersonalInfoStep({ defaultValues, onSubmit, onBack }: PersonalIn
                 placeholder="username"
                 error={form.formState.errors.linkedin?.message}
                 {...form.register('linkedin')}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(e, 'instagram')}
               />
 
               <FormField
@@ -85,6 +108,7 @@ export function PersonalInfoStep({ defaultValues, onSubmit, onBack }: PersonalIn
                 placeholder="username"
                 error={form.formState.errors.instagram?.message}
                 {...form.register('instagram')}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(e, 'xHandle')}
               />
 
               <FormField
@@ -93,6 +117,7 @@ export function PersonalInfoStep({ defaultValues, onSubmit, onBack }: PersonalIn
                 placeholder="username"
                 error={form.formState.errors.xHandle?.message}
                 {...form.register('xHandle')}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(e, 'website')}
               />
 
               <FormField
@@ -101,6 +126,7 @@ export function PersonalInfoStep({ defaultValues, onSubmit, onBack }: PersonalIn
                 placeholder="https://yoursite.com"
                 error={form.formState.errors.website?.message}
                 {...form.register('website')}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(e)}
               />
             </div>
           </div>
@@ -113,6 +139,7 @@ export function PersonalInfoStep({ defaultValues, onSubmit, onBack }: PersonalIn
         />
 
         <button
+          ref={submitButtonRef}
           type="submit"
           className="w-full mt-3 sm:mt-4 px-4 sm:px-6 py-3 sm:py-4 bg-river-teal text-white rounded-xl font-heading text-sm sm:text-base font-semibold hover:bg-deep-indigo transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
