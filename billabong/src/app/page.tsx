@@ -115,7 +115,7 @@ export default function Home() {
               </a>
               <Link href="/guests" className="ripple-underline text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C] transition-colors">
                 guests</Link>
-              <Link href={CONFIG.apply_url} className="px-6 py-2 bg-[#1F7A8C] text-white rounded-full font-medium text-sm hover:bg-[#0D1B2A] transition-all hover:shadow-lg ripple-underline text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C] transition-colors">
+              <Link href={CONFIG.arrayah_home_url} className="px-6 py-2 bg-[#1F7A8C] text-white rounded-full font-medium text-sm hover:bg-[#0D1B2A] transition-all hover:shadow-lg ripple-underline text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C] transition-colors">
                 apply now
               </Link>
             </div>
@@ -141,19 +141,18 @@ export default function Home() {
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-[#1F7A8C]/10 bg-[#F7F8F5]">
             <div className="px-4 py-4 space-y-3">
-              <a href="/house-rules" className="block text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C]" onClick={() => setMobileMenuOpen(false)}>
+              <Link href="/house-rules" className="block text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C]" onClick={() => setMobileMenuOpen(false)}>
                 house rules
-              </a>
-              <a href="/residents" className="block text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C]" onClick={() => setMobileMenuOpen(false)}>
+              </Link>
+              <Link href="/residents" className="block text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C]" onClick={() => setMobileMenuOpen(false)}>
                 residents
-              </a>
-              <a 
-                href={CONFIG.apply_url} 
-                className="block w-full px-6 py-2 bg-[#1F7A8C] text-white rounded-full font-medium text-sm text-center hover:bg-[#0D1B2A]"
-                onClick={() => setMobileMenuOpen(false)}
-              >
+              </Link>
+              <Link href="/guests" className="block text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C]" onClick={() => setMobileMenuOpen(false)}>
+                guests
+              </Link>
+              <Link href={CONFIG.arrayah_home_url} className="px-6 py-2 bg-[#1F7A8C] text-white rounded-full font-medium text-sm hover:bg-[#0D1B2A] transition-all hover:shadow-lg ripple-underline text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C] transition-colors">
                 apply now
-              </a>
+              </Link>
             </div>
           </div>
         )}
