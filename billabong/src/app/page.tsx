@@ -202,7 +202,7 @@ export default function Home() {
         </div>
         <Link 
           href="#manifesto" 
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer"
+          className="absolute bottom-0 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer sm:bottom-8"
           aria-label="Scroll to manifesto section"
         >
           <div className="flex flex-col items-center gap-2">

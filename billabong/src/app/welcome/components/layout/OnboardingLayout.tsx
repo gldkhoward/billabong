@@ -40,7 +40,7 @@ export function OnboardingLayout({ step, children }: OnboardingLayoutProps) {
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto py-4 sm:py-8 md:py-12 px-3 sm:px-4 md:px-6 lg:px-8 flex items-center justify-center">
-        <div className="max-w-4xl mx-auto w-full">
+        <div className="max-w-4xl mx-auto w-full h-full">
           {children}
         </div>
       </main>

@@ -26,7 +26,7 @@ export function ProfileQuestionsStep({
   });
 
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in pb-4">
       <div className="text-center mb-8 sm:mb-12 px-2">
         <h1 className="font-heading font-bold text-3xl sm:text-4xl md:text-5xl text-deep-indigo mb-3 sm:mb-4">
           your story
