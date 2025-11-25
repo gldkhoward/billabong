@@ -194,12 +194,6 @@ export default function GuestsPage() {
             </Link>
             <div className="flex items-center gap-4">
               <Link 
-                href="/guests/landing"
-                className="px-4 py-2 bg-river-teal text-white rounded-lg font-heading font-semibold hover:bg-deep-indigo transition-all text-sm"
-              >
-                Check In
-              </Link>
-              <Link 
                 href="/"
                 className="text-sm font-medium text-charcoal hover:text-river-teal transition-colors"
               >

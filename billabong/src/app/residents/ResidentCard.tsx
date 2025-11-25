@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 
 interface ResidentCardProps {
@@ -9,7 +9,6 @@ interface ResidentCardProps {
     description: string;
     tags: string[];
     image: string;
-    position: { top?: string; bottom?: string; left?: string; right?: string };
     rotation: number;
     socials: {
       twitter?: string;
@@ -19,6 +18,7 @@ interface ResidentCardProps {
       website?: string;
     };
   };
+  index: number;
 }
 
 const getSocialIcon = (platform: string) => {
@@ -52,38 +52,44 @@ const getSocialIcon = (platform: string) => {
   return icons[platform as keyof typeof icons] || null;
 };
 
-export function ResidentCard({ resident }: ResidentCardProps) {
+export function ResidentCard({ resident, index }: ResidentCardProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
 
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 640);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  // Create organic offsets based on index for that hand-placed feel
+  // Alternating pattern creates visual interest without chaos
+  const offsets = [
+    { x: 0, y: 0 },      // 0: centered
+    { x: 8, y: -6 },     // 1: nudged right, up
+    { x: -6, y: 4 },     // 2: nudged left, down
+    { x: 4, y: -8 },     // 3: slight right, up more
+    { x: -8, y: 6 },     // 4: left, down
+    { x: 6, y: 2 },      // 5: right, slight down
+    { x: -4, y: -4 },    // 6: left, up
+    { x: 10, y: 8 },     // 7: right, down
+  ];
+  const offset = offsets[index % offsets.length];
 
   return (
     <div
-      className="relative sm:absolute w-full max-w-[380px] sm:w-[380px] transition-transform duration-300 ease-out"
+      className="group transition-all duration-300 ease-out will-change-transform"
       style={{
-        // On mobile, cards are stacked (relative positioning, no custom position)
-        // On desktop, cards are scattered (absolute positioning with custom positions)
-        ...(isMobile ? {} : resident.position),
-        transform: `rotate(${resident.rotation}deg)`,
+        transform: isHovered 
+          ? 'rotate(0deg) scale(1.05) translateY(-4px)' 
+          : `rotate(${resident.rotation}deg) translate(${offset.x}px, ${offset.y}px)`,
         zIndex: isHovered ? 50 : 10,
+        // Stagger fade-in animation
+        animation: 'fadeIn 0.5s ease-out forwards',
+        animationDelay: `${index * 80}ms`,
+        opacity: 0,
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div 
         className={`
-          relative bg-white backdrop-blur-sm rounded-2xl p-6 border-2 border-[#1F7A8C]/20
-          transition-all duration-300 ease-out cursor-pointer
-          ${isHovered ? 'shadow-2xl border-[#1F7A8C]/50 scale-110 rotate-0' : 'shadow-lg'}
+          relative bg-white/95 backdrop-blur-sm rounded-2xl p-5 sm:p-6 border-2 border-[#1F7A8C]/20
+          transition-all duration-300 ease-out cursor-pointer h-full
+          ${isHovered ? 'shadow-2xl border-[#1F7A8C]/50 -translate-y-1' : 'shadow-lg'}
         `}
       >
         {/* Animated corner accent */}
@@ -99,30 +105,31 @@ export function ResidentCard({ resident }: ResidentCardProps) {
         <div className="flex items-start gap-4 mb-4">
           <div className="relative flex-shrink-0">
             <div 
-              className={`
-                w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-300 relative
-                ${isHovered ? 'border-[#1F7A8C] scale-110 rotate-3' : 'border-[#1F7A8C]/30'}
-              `}
+              className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 transition-all duration-300 relative"
+              style={{
+                borderColor: isHovered ? '#1F7A8C' : 'rgba(31, 122, 140, 0.3)',
+                transform: isHovered ? 'scale(1.08) rotate(3deg)' : 'scale(1) rotate(0deg)',
+              }}
             >
               <Image 
                 src={resident.image} 
                 alt={resident.name}
                 fill
                 className="object-cover"
-                sizes="80px"
+                sizes="(max-width: 640px) 64px, 80px"
               />
             </div>
           </div>
           
           {/* Name and underline */}
-          <div className="flex-1 pt-2">
-            <h2 className="font-heading font-bold text-2xl text-[#0D1B2A] mb-2">
+          <div className="flex-1 min-w-0 pt-1 sm:pt-2">
+            <h2 className="font-heading font-bold text-xl sm:text-2xl text-[#0D1B2A] mb-1.5 truncate">
               {resident.name}
             </h2>
             <div 
               className={`
-                h-1 bg-gradient-to-r from-[#1F7A8C] to-[#6C8C64] rounded-full transition-all duration-300
-                ${isHovered ? 'w-full' : 'w-12'}
+                h-0.5 sm:h-1 bg-gradient-to-r from-[#1F7A8C] to-[#6C8C64] rounded-full transition-all duration-300
+                ${isHovered ? 'w-full' : 'w-10 sm:w-12'}
               `}
             />
           </div>

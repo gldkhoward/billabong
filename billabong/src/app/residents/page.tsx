@@ -5,94 +5,86 @@ import { ResidentCard } from './ResidentCard';
 const residents = [
   {
     name: 'akshat',
-    description: 'building arrayah',
-    tags: ['infra', 'dev tools', 'systems'],
-    image: '/arrayh_logo.jpg',
-    position: { top: '5%', left: '5%' },
-    rotation: -4,
+    description: 'founder of arrayah — building spaces where you can just do things',
+    tags: ['community', 'startups', 'antler'],
+    image: '/akshat.jpeg',
+    rotation: -2.5,
     socials: {
-      twitter: 'https://twitter.com/akshat',
-      github: 'https://github.com/akshat',
-      website: 'https://akshat.com',
+      linkedin: 'https://www.linkedin.com/in/akshat418/'
     }
   },
   {
     name: 'luke',
-    description: ' building the future of inventory management',
+    description: 'building the future of inventory management @ Lecxa',
     tags: ['robotics', 'saas', 'ai'],
     image: '/luke.jpeg',
-    position: { top: '2%', right: '5%' },
-    rotation: 3,
+    rotation: 1.5,
     socials: {
       website: 'https://lukehoward.com.au',
-      twitter: 'https://twitter.com/luke',
-      github: 'https://github.com/luke',
-      linkedin: 'https://linkedin.com/in/luke',
+      github: 'https://github.com/gldkhoward',
+      linkedin: 'https://www.linkedin.com/in/lukehowarduts/',
+    }
+  },
+  {
+    name: 'amanda',
+    description: 'data scientist @ canva',
+    tags: ['data science', 'ml', 'product'],
+    image: '/amanda.jpeg',
+    rotation: -1.5,
+    socials: {
+      linkedin: 'https://www.linkedin.com/in/amanda-de-silva-426010161/',
     }
   },
   {
     name: 'matty',
-    description: 'crypto arbitrage',
-    tags: ['crypto', 'design', 'collaboration'],
-    image: '/arrayh_logo.jpg',
-    position: { top: '30%', left: '8%' },
-    rotation: -2,
+    description: 'software engineer & builder -> ex canva, relevance ai',
+    tags: ['engineering', 'infra', 'fullstack'],
+    image: '/matty.jpeg',
+    rotation: 2,
     socials: {
-      twitter: 'https://twitter.com/matty',
-      website: 'https://matty.com',
-      instagram: 'https://instagram.com/matty',
+      website: 'https://mattyhempstead.com',
+      linkedin: 'https://www.linkedin.com/in/mattyhempstead/'
     }
   },
   {
     name: 'jack',
-    description: 'building tempest ai',
+    description: 'building tempest ai -> ai for gaming',
     tags: ['gaming', 'ai', 'webdev'],
     image: '/jack.jpeg',
-    position: { top: '33%', right: '8%' },
-    rotation: 5,
+    rotation: -2,
     socials: {
-      github: 'https://github.com/jack',
-      linkedin: 'https://linkedin.com/in/jack',
-      twitter: 'https://twitter.com/jack',
+      linkedin: 'https://www.linkedin.com/in/jack-wakem-ab7170230/',
     }
   },
   {
     name: 'josh',
-    description: 'making health data more accessible',
-    tags: ['health tech', 'data', 'bio'],
-    image: '/arrayh_logo.jpg',
-    position: { top: '58%', left: '6%' },
-    rotation: -3,
+    description: 'affiliate marketing & growth experiments',
+    tags: ['marketing', 'growth', 'ecommerce'],
+    image: '/josh.jpeg',
+    rotation: 1.5,
     socials: {
-      twitter: 'https://twitter.com/josh',
-      website: 'https://josh.com',
-      linkedin: 'https://linkedin.com/in/josh',
+      linkedin: 'https://www.linkedin.com/in/josh--neil/',
     }
   },
   {
     name: 'kongwei',
-    description: 'developing next-gen education platforms',
-    tags: ['edtech', 'product', 'learning'],
+    description: 'building kairos lifemap, filtrum & deeply useful software tools',
+    tags: ['product', 'design', 'philosophy'],
     image: '/arrayh_logo.jpg',
-    position: { top: '60%', right: '6%' },
-    rotation: 2,
+    rotation: -1,
     socials: {
-      twitter: 'https://twitter.com/kongwei',
-      github: 'https://github.com/kongwei',
-      linkedin: 'https://linkedin.com/in/kongwei',
+      website: 'https://eusaybia.com',
+      linkedin: 'https://www.linkedin.com/in/conwayying/',
     }
   },
   {
     name: 'rey',
-    description: 'crafting experiences for the spatial web',
-    tags: ['spatial', 'design', 'ar/vr'],
-    image: '/arrayh_logo.jpg',
-    position: { top: '85%', left: '35%' },
-    rotation: -5,
+    description: 'founder, angel investor & dj -> ex mckinsey, building toward systems change',
+    tags: ['investing', 'health', 'systems'],
+    image: '/rey.jpeg',
+    rotation: 2.5,
     socials: {
-      twitter: 'https://twitter.com/rey',
-      instagram: 'https://instagram.com/rey',
-      website: 'https://rey.com',
+      linkedin: 'https://www.linkedin.com/in/reynolds-tang-smith/'
     }
   },
 ];
@@ -118,24 +110,19 @@ export default function Residents() {
       </nav>
 
       {/* Main Content */}
-      <main className="relative py-12 sm:py-20 px-4 sm:px-6 lg:px-8 min-h-[180vh]">
-        {/* Center Animation - Outside container constraints */}
+      <main className="relative py-12 sm:py-20 px-4 sm:px-6 lg:px-8">
+        {/* Background Animation */}
         <div 
-          className="absolute top-[17%] left-1/2 pointer-events-none z-0 will-change-transform md:top-3/10" 
-          style={{ 
-            transform: 'translate(-50%, -50%)',
-            width: '80vw',
-            height: '80vh',
-            opacity: 0.2
-          }}
+          className="fixed inset-0 pointer-events-none z-0" 
+          style={{ opacity: 0.08 }}
         >
           <PeopleAnimation />
         </div>
 
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-6xl mx-auto relative z-10">
           {/* Header */}
-          <div className="text-center mb-24 sm:mb-32">
-            <h1 className="font-heading font-bold text-3xl sm:text-4xl lg:text-6xl text-[#0D1B2A] mb-4 sm:mb-6">
+          <div className="text-center mb-12 sm:mb-16">
+            <h1 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-[#0D1B2A] mb-4 sm:mb-6">
               residents
             </h1>
             <p className="font-body text-base sm:text-lg text-[#1A1A1A]/70 max-w-2xl mx-auto leading-relaxed">
@@ -143,19 +130,19 @@ export default function Residents() {
             </p>
           </div>
 
-          {/* Scattered Cards Container - Desktop scattered, Mobile stacked */}
-          <div className="relative min-h-[120vh] sm:block flex flex-col items-center gap-8">
+          {/* Responsive Grid Layout - with extra padding for organic card offsets */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 lg:gap-12 px-2 sm:px-4">
             {residents.map((resident, index) => (
-              <ResidentCard key={index} resident={resident} />
+              <ResidentCard key={index} resident={resident} index={index} />
             ))}
           </div>
 
           {/* Footer Note */}
-          <div className="mt-16 sm:mt-24 text-center relative z-50">
+          <div className="mt-16 sm:mt-20 text-center">
             <div className="bg-[#E9DCC2]/20 rounded-xl p-6 sm:p-8 border border-[#6C8C64]/20">
               <p className="font-body text-sm sm:text-base text-[#1A1A1A]/70 leading-relaxed">
                 interested in joining us?{' '}
-                <a href="/apply" className="text-[#1F7A8C] hover:underline font-medium">
+                <a href="https://arrayah.city/#residency" className="text-[#1F7A8C] hover:underline font-medium">
                   learn about residencies
                 </a>
               </p>

@@ -115,7 +115,7 @@ export default function Home() {
               </a>
               <Link href="/guests" className="ripple-underline text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C] transition-colors">
                 guests</Link>
-              <Link href={CONFIG.arrayah_home_url} className="px-6 py-2 bg-[#1F7A8C] text-white rounded-full font-medium text-sm hover:bg-[#0D1B2A] transition-all hover:shadow-lg ripple-underline text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C] transition-colors">
+              <Link href={CONFIG.arrayah_home_url} className="px-6 py-2 bg-[#1F7A8C] text-white rounded-full font-medium text-sm hover:bg-[#1A6B7A] transition-all hover:shadow-lg">
                 apply now
               </Link>
             </div>
@@ -150,7 +150,7 @@ export default function Home() {
               <Link href="/guests" className="block text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C]" onClick={() => setMobileMenuOpen(false)}>
                 guests
               </Link>
-              <Link href={CONFIG.arrayah_home_url} className="px-6 py-2 bg-[#1F7A8C] text-white rounded-full font-medium text-sm hover:bg-[#0D1B2A] transition-all hover:shadow-lg ripple-underline text-sm font-medium text-[#1A1A1A] hover:text-[#1F7A8C] transition-colors">
+              <Link href={CONFIG.arrayah_home_url} className="inline-block px-6 py-2 bg-[#1F7A8C] text-white rounded-full font-medium text-sm hover:bg-[#1A6B7A] transition-all hover:shadow-lg">
                 apply now
               </Link>
             </div>
@@ -297,9 +297,9 @@ export default function Home() {
               </p>
               <p className="font-body text-white/70 text-sm">
                 Drummoyne, NSW<br />
-                <a href={CONFIG.contact_url} className="ripple-underline hover:text-white">
+                {/* <a href={CONFIG.contact_url} className="ripple-underline hover:text-white">
                   hello@billabong.house
-                </a>
+                </a> */}
               </p>
             </div>
             
@@ -310,13 +310,10 @@ export default function Home() {
             <div>
               <h4 className="font-heading font-semibold mb-4">Connect</h4>
               <div className="flex gap-4">
-                <a href="#" className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all" aria-label="Twitter">
+                <a href="https://x.com/_Arrayah" className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all" aria-label="Twitter">
                   <span className="text-xl">𝕏</span>
                 </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all" aria-label="Instagram">
-                  <span className="text-xl">📷</span>
-                </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all" aria-label="LinkedIn">
+                <a href="https://www.linkedin.com/company/live-arrayah/" className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all" aria-label="LinkedIn">
                   <span className="text-xl">💼</span>
                 </a>
               </div>
@@ -325,7 +322,7 @@ export default function Home() {
           
           <div className="border-t border-white/10 pt-8">
             <p className="font-body text-white/50 text-xs text-center mb-2">
-              We acknowledge the Gadigal and Wangal people of the Eora Nation, the traditional custodians of the land on which we gather, and pay our respects to Elders past and present.
+              We acknowledge the Gadigal and Wangal people of the Eora Nation, the traditional custodians of the land on which we live, gather and build. We recognise them as the original engineers, artists and innovators of this land, and we pay our respects to Elders past and present.
             </p>
             <p className="font-body text-white/50 text-xs text-center">
               © {new Date().getFullYear()} Billabong House. Part of Arrayah.
