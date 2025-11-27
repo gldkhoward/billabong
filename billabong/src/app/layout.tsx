@@ -18,6 +18,14 @@ export const metadata: Metadata = {
   title: "Billabong House — Where Momentum Gathers",
   description: "A waterfront residency home in Drummoyne for builders, researchers, and creators. Focus hard. Ship together. Part of the Arrayah network.",
   keywords: ["residency", "coliving", "coworking", "builder house", "Drummoyne", "Sydney", "Arrayah"],
+  icons: {
+    icon: [
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: "/site.webmanifest",
   openGraph: {
     title: "Billabong House - Where Momentum Gathers",
     description: "A waterfront residency home in Drummoyne for builders, researchers, and creators.",
@@ -40,7 +48,6 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/favicon.ico" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
