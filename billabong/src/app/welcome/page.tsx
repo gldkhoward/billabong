@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useCreateHomie } from '@/hooks/useHomies';
 import { useCreateVisit, useVisitHistory } from '@/hooks/useVisits';
@@ -26,7 +26,28 @@ import {
 
 type CodeStatus = 'validating' | 'valid' | 'invalid' | 'expired' | 'missing';
 
+// Loading fallback for Suspense
+function WelcomeLoading() {
+  return (
+    <div className="min-h-screen bg-foam flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-river-teal mx-auto mb-4"></div>
+        <p className="text-charcoal/70">Loading...</p>
+      </div>
+    </div>
+  );
+}
+
+// Wrap in Suspense for useSearchParams
 export default function WelcomePage() {
+  return (
+    <Suspense fallback={<WelcomeLoading />}>
+      <WelcomePageContent />
+    </Suspense>
+  );
+}
+
+function WelcomePageContent() {
   const searchParams = useSearchParams();
   const [codeStatus, setCodeStatus] = useState<CodeStatus>('validating');
 
