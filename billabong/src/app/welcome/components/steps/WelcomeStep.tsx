@@ -16,9 +16,9 @@ export function WelcomeStep({ onReturningGuest, onNewGuest }: WelcomeStepProps) 
         <Image 
           src="/arrayh_logo.jpg" 
           alt="Billabong House" 
-          width={80} 
+          width={200} 
           height={80}
-          className="mx-auto rounded-2xl shadow-xl sm:w-[100px] sm:h-[100px]"
+          className="mx-auto rounded-2xl shadow-xl w-auto h-[80px] sm:h-[100px] object-contain"
         />
       </div>
       <h1 className="font-heading font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-deep-indigo mb-4 sm:mb-6 px-2">

@@ -268,6 +268,27 @@ export type Database = {
           },
         ]
       }
+      welcome_codes: {
+        Row: {
+          id: string
+          created_at: string
+          expires_at: string
+          code: string
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          expires_at: string
+          code: string
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          expires_at?: string
+          code?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       v_current_presence: {
