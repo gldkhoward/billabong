@@ -90,49 +90,37 @@ export function ProfileQuestionsStep({
             onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(e, 'whyBillabong', false)}
           />
 
-          <div>
-            <FormField
-              label="Why did you come to Billabong?"
-              type="textarea"
-              required
-              placeholder="What brought you here today?"
-              rows={3}
-              error={form.formState.errors.whyBillabong?.message}
-              {...form.register('whyBillabong')}
-              onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => handleKeyDown(e, 'workingOn', true)}
-            />
-            <p className="mt-1 text-xs text-charcoal/50 font-body">
-              Press Ctrl+Enter (or Cmd+Enter) to move to next field
-            </p>
-          </div>
+          <FormField
+            label="Why did you come to Billabong?"
+            type="textarea"
+            required
+            placeholder="What brought you here today?"
+            rows={3}
+            error={form.formState.errors.whyBillabong?.message}
+            {...form.register('whyBillabong')}
+            onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => handleKeyDown(e, 'workingOn', true)}
+          />
 
-          <div>
-            <FormField
-              label="What are you working on?"
-              type="textarea"
-              required
-              placeholder="Your current project, research, or creative work"
-              rows={3}
-              error={form.formState.errors.workingOn?.message}
-              {...form.register('workingOn')}
-              onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => handleKeyDown(e, 'howToHelp', true)}
-            />
-            <p className="mt-1 text-xs text-charcoal/50 font-body">
-              Press Ctrl+Enter (or Cmd+Enter) to move to next field
-            </p>
-          </div>
+          <FormField
+            label="What are you working on?"
+            type="textarea"
+            required
+            placeholder="Your current project, research, or creative work"
+            rows={3}
+            error={form.formState.errors.workingOn?.message}
+            {...form.register('workingOn')}
+            onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => handleKeyDown(e, 'howToHelp', true)}
+          />
 
-          <div>
-            <FormField
-              label="How can others help?"
-              type="textarea"
-              placeholder="Intros, feedback, collaboration opportunities..."
-              rows={3}
-              error={form.formState.errors.howToHelp?.message}
-              {...form.register('howToHelp')}
-              onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => handleKeyDown(e, undefined, true)}
-            />
-          </div>
+          <FormField
+            label="How can others help?"
+            type="textarea"
+            placeholder="Intros, feedback, collaboration opportunities..."
+            rows={3}
+            error={form.formState.errors.howToHelp?.message}
+            {...form.register('howToHelp')}
+            onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => handleKeyDown(e, undefined, true)}
+          />
         </div>
 
         {error && (
