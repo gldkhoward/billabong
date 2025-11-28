@@ -103,25 +103,105 @@ function WelcomePageContent() {
   const visitHistory = useVisitHistory();
   const { uploading: uploadingImage, uploadImage } = useProfileImageUpload();
 
+  // Recover saved progress from sessionStorage (for mobile refresh recovery)
+  useEffect(() => {
+    if (codeStatus !== 'valid') return; // Only recover if code is valid
+    
+    try {
+      const backup = sessionStorage.getItem('onboarding_backup');
+      if (backup) {
+        const saved = JSON.parse(backup);
+        // Only restore if backup is recent (within 1 hour)
+        const oneHourAgo = Date.now() - 60 * 60 * 1000;
+        if (saved.timestamp && saved.timestamp > oneHourAgo) {
+          // Restore step and data
+          if (saved.step && saved.step !== 'welcome' && saved.step !== 'complete') {
+            setStep(saved.step);
+            if (saved.homieData) {
+              updateHomieData(saved.homieData);
+            }
+            // Clear the backup after restoring
+            sessionStorage.removeItem('onboarding_backup');
+          }
+        } else {
+          // Backup is too old, remove it
+          sessionStorage.removeItem('onboarding_backup');
+        }
+      }
+    } catch {
+      // Ignore errors (invalid JSON, storage disabled, etc.)
+      try {
+        sessionStorage.removeItem('onboarding_backup');
+      } catch {
+        // Ignore cleanup errors
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [codeStatus]); // Only run when code status becomes valid
+
   // Warn user before leaving if they have unsaved progress
+  // Note: beforeunload works on desktop but NOT on iOS Safari
+  // We use multiple strategies for cross-platform support
   useEffect(() => {
     const shouldWarn = step !== 'welcome' && step !== 'complete';
 
+    if (!shouldWarn) return;
+
+    // Strategy 1: beforeunload for desktop browsers (works on Chrome, Firefox, Safari desktop)
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (shouldWarn) {
-        e.preventDefault();
-        return '';
+      e.preventDefault();
+      // Modern browsers ignore the return value, but we still need to set it
+      e.returnValue = '';
+      return '';
+    };
+
+    // Strategy 2: pagehide for mobile browsers (iOS Safari, Android Chrome)
+    // Note: We can't prevent navigation on mobile, but we can detect it
+    const handlePageHide = (e: PageTransitionEvent) => {
+      // On mobile, we can't show a confirmation dialog, but we can save state
+      // The pagehide event fires when the page is being unloaded
+      if (e.persisted === false) {
+        // Page is being unloaded (not just cached)
+        // Store current progress in sessionStorage as backup
+        try {
+          sessionStorage.setItem('onboarding_backup', JSON.stringify({
+            step,
+            homieData,
+            timestamp: Date.now(),
+          }));
+        } catch {
+          // Ignore storage errors (private browsing mode, etc.)
+        }
       }
     };
 
-    if (shouldWarn) {
-      window.addEventListener('beforeunload', handleBeforeUnload);
-    }
+    // Strategy 3: visibilitychange for detecting when page becomes hidden
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // Page is being hidden - save state as backup
+        try {
+          sessionStorage.setItem('onboarding_backup', JSON.stringify({
+            step,
+            homieData,
+            timestamp: Date.now(),
+          }));
+        } catch {
+          // Ignore storage errors
+        }
+      }
+    };
+
+    // Add all event listeners
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('pagehide', handlePageHide);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('pagehide', handlePageHide);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [step]);
+  }, [step, homieData]);
 
   // ========== Event Handlers ==========
 
