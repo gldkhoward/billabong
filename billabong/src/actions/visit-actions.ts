@@ -204,3 +204,55 @@ export async function getCurrentVisit(homieId: string): Promise<ActionResult<Vis
   }
 }
 
+/**
+ * Get live visit stats (guests today, here now)
+ */
+export async function getVisitStats(): Promise<ActionResult<{
+  guestsToday: number;
+  hereNow: number;
+}>> {
+  try {
+    const supabase = await createServiceRoleClient();
+    
+    // Get start of today in UTC
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    
+    // Count visits that checked in today
+    const { count: guestsToday, error: todayError } = await supabase
+      .from('visits')
+      .select('*', { count: 'exact', head: true })
+      .gte('checkin_at', todayStart.toISOString());
+    
+    if (todayError) {
+      console.error('Error fetching guests today:', todayError);
+      return { success: false, error: todayError.message };
+    }
+    
+    // Count active visits (not checked out)
+    const { count: hereNow, error: activeError } = await supabase
+      .from('visits')
+      .select('*', { count: 'exact', head: true })
+      .is('checkout_at', null);
+    
+    if (activeError) {
+      console.error('Error fetching here now:', activeError);
+      return { success: false, error: activeError.message };
+    }
+    
+    return { 
+      success: true, 
+      data: { 
+        guestsToday: guestsToday || 0, 
+        hereNow: hereNow || 0 
+      } 
+    };
+  } catch (error) {
+    console.error('Error in getVisitStats:', error);
+    if (error instanceof Error) {
+      return { success: false, error: error.message };
+    }
+    return { success: false, error: 'An unknown error occurred' };
+  }
+}
+

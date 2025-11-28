@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useCreateHomie } from '@/hooks/useHomies';
-import { useCreateVisit, useVisitHistory } from '@/hooks/useVisits';
+import { useCreateVisit, useVisitHistory, useVisitStats } from '@/hooks/useVisits';
 import { useOnboardingFlow } from '@/hooks/useOnboardingFlow';
 import { useProfileImageUpload } from '@/hooks/useProfileImageUpload';
 import { mapFormDataToHomieInsert, type PersonalInfo, type ProfileQuestions } from '@/schemas/homie-schema';
@@ -101,6 +101,7 @@ function WelcomePageContent() {
   const createHomie = useCreateHomie();
   const createVisit = useCreateVisit();
   const visitHistory = useVisitHistory();
+  const visitStats = useVisitStats();
   const { uploading: uploadingImage, uploadImage } = useProfileImageUpload();
 
   // Recover saved progress from sessionStorage (for mobile refresh recovery)
@@ -295,6 +296,8 @@ function WelcomePageContent() {
   // Handle visit creation success
   useEffect(() => {
     if (createVisit.data && step !== 'complete') {
+      // Fetch live stats when visit is created
+      visitStats.fetch();
       setStep('complete');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -405,6 +408,8 @@ function WelcomePageContent() {
           homieData={homieData}
           isReturning={isReturning}
           visitCount={visitHistory.data?.totalVisits}
+          guestsToday={visitStats.data?.guestsToday}
+          hereNow={visitStats.data?.hereNow}
         />
       )}
     </OnboardingLayout>

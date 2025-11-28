@@ -7,6 +7,7 @@ import {
   getActiveVisits,
   getHomieVisitHistory,
   getCurrentVisit,
+  getVisitStats,
 } from '@/actions/visit-actions';
 import type { VisitCreate } from '@/schemas/homie-schema';
 
@@ -208,6 +209,49 @@ export function useCurrentVisit() {
     startTransition(async () => {
       try {
         const result = await getCurrentVisit(homieId);
+        
+        if (result.success) {
+          setData(result.data);
+        } else {
+          setError(result.error);
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
+      }
+    });
+  };
+
+  return {
+    fetch,
+    isPending,
+    error,
+    data,
+    reset: () => {
+      setError(null);
+      setData(null);
+    },
+  };
+}
+
+type VisitStats = {
+  guestsToday: number;
+  hereNow: number;
+};
+
+/**
+ * Hook for fetching live visit stats (guests today, here now)
+ */
+export function useVisitStats() {
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+  const [data, setData] = useState<VisitStats | null>(null);
+
+  const fetch = async () => {
+    setError(null);
+
+    startTransition(async () => {
+      try {
+        const result = await getVisitStats();
         
         if (result.success) {
           setData(result.data);

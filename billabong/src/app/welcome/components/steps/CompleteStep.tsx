@@ -9,9 +9,11 @@ type CompleteStepProps = {
   homieData: HomieData;
   isReturning: boolean;
   visitCount?: number;
+  guestsToday?: number;
+  hereNow?: number;
 };
 
-export function CompleteStep({ homieData, isReturning, visitCount }: CompleteStepProps) {
+export function CompleteStep({ homieData, isReturning, visitCount, guestsToday, hereNow }: CompleteStepProps) {
   return (
     <div className="animate-fade-in text-center">
       <div className="bg-white rounded-2xl p-4 sm:p-8 md:p-12 shadow-xl max-w-2xl mx-auto">
@@ -83,22 +85,26 @@ export function CompleteStep({ homieData, isReturning, visitCount }: CompleteSte
       </div>
 
       {/* Fun Stats Section */}
-      {isReturning && visitCount !== undefined && (
+      {(visitCount !== undefined || guestsToday !== undefined || hereNow !== undefined) && (
         <div className="mt-8 sm:mt-12 grid grid-cols-3 gap-3 sm:gap-4 max-w-2xl mx-auto px-4">
           <div className="bg-white rounded-xl p-3 sm:p-4 shadow">
             <div className="text-2xl sm:text-3xl font-bold text-river-teal">
-              {visitCount + 1}
+              {visitCount !== undefined ? visitCount + 1 : '-'}
             </div>
             <div className="text-xs sm:text-sm text-charcoal/60 font-body">
-              total visits
+              {isReturning ? 'your visits' : 'your visit'}
             </div>
           </div>
           <div className="bg-white rounded-xl p-3 sm:p-4 shadow">
-            <div className="text-2xl sm:text-3xl font-bold text-river-teal">47</div>
+            <div className="text-2xl sm:text-3xl font-bold text-river-teal">
+              {guestsToday !== undefined ? guestsToday : '-'}
+            </div>
             <div className="text-xs sm:text-sm text-charcoal/60 font-body">guests today</div>
           </div>
           <div className="bg-white rounded-xl p-3 sm:p-4 shadow">
-            <div className="text-2xl sm:text-3xl font-bold text-river-teal">12</div>
+            <div className="text-2xl sm:text-3xl font-bold text-river-teal">
+              {hereNow !== undefined ? hereNow : '-'}
+            </div>
             <div className="text-xs sm:text-sm text-charcoal/60 font-body">here now</div>
           </div>
         </div>
