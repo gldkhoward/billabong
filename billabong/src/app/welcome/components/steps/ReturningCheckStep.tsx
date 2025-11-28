@@ -31,10 +31,11 @@ export function ReturningCheckStep({
     resetSearch,
   } = useHomieSearch();
 
-  // Fetch homies when component mounts
+  // Fetch homies when component mounts (only once)
   useEffect(() => {
     fetchHomies();
-  }, [fetchHomies]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty deps - only run on mount since fetchHomies is memoized
 
   const handleNotFound = () => {
     const { firstName, lastName } = parseNameFromSearch(searchQuery);
